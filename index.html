@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Flashcards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Reset and Typography */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            color: #2c3e50;
+            padding: 1rem;
+        }
+
+        /* Info Display */
+        .info {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #34495e;
+            background: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Card Row with Previous and Next */
+        .card-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Card Container */
+        .card-container {
+            width: 100%;
+            max-width: 380px;
+            height: 240px;
+            perspective: 1200px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+
+        .card-front {
+            background: #ffffff;
+            color: #34495e;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-back {
+            background: linear-gradient(45deg, #ff9f43, #ffcc66);
+            color: #ffffff;
+            transform: rotateY(180deg);
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* Buttons Container (split into left and right with separator) */
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button-separator {
+            width: 2px;
+            height: 20px;
+            background: #ccc;
+            margin: 0 1rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            min-width: 120px; /* Ensure touch-friendly size on mobile */
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Colors for Functionality */
+        .add-btn { background: #2ecc71; color: #ffffff; }
+        .add-btn:hover { background: #27ae60; }
+
+        .edit-btn { background: #f1c40f; color: #ffffff; }
+        .edit-btn:hover { background: #d4a017; }
+
+        .delete-btn { background: #e74c3c; color: #ffffff; }
+        .delete-btn:hover { background: #c0392b; }
+
+        .shuffle-btn { background: #3498db; color: #ffffff; }
+        .shuffle-btn.active { background: #e74c3c; }
+        .shuffle-btn.active:hover { background: #c0392b; }
+        .shuffle-btn:hover { background: #2980b9; }
+
+        .view-btn { background: #3498db; color: #ffffff; }
+        .view-btn:hover { background: #2980b9; }
+
+        /* Modal Styling (Add/Edit and View All Words) */
+        #addWordModal, #viewWordsModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            padding: 1.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -48%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        #addWordModal h3, #viewWordsModal h3 {
+            margin: 0 0 1.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.75rem;
+            text-align: center;
+        }
+
+        #addWordModal label {
+            display: block;
+            margin: 0.5rem 0 0.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        #addWordModal label.required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        #addWordModal input, #viewWordsModal input {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.75rem;
+            padding: 0.85rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: #f9fbfc;
+            transition: all 0.2s ease;
+        }
+
+        #addWordModal input:focus, #viewWordsModal input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+            background: #ffffff;
+        }
+
+        #addWordModal input::placeholder, #viewWordsModal input::placeholder {
+            color: #b0bec5;
+        }
+
+        #addWordModal input:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #addWordModal .modal-buttons, #viewWordsModal .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        #addWordModal button, #viewWordsModal button {
+            padding: 0.85rem 1.5rem;
+            width: 48%;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        #addWordModal button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #addWordModal button:first-of-type {
+            background: #2ecc71;
+        }
+
+        #addWordModal button:last-of-type, #viewWordsModal button {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        #addWordModal button:hover:not(:disabled), #viewWordsModal button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        #addWordModal button:first-of-type:hover:not(:disabled) {
+            background: #27ae60;
+        }
+
+        #addWordModal button:last-of-type:hover:not(:disabled), #viewWordsModal button:hover {
+            background: #dfe6e9;
+        }
+
+        #wordError, #fieldsError {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        #wordList {
+            margin-top: 1rem;
+        }
+
+        .word-item {
+            padding: 0.75rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            background: #f9fbfc;
+            transition: background 0.2s ease;
+        }
+
+        .word-item:hover {
+            background: #eef2f6;
+        }
+
+        .word-item-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .word-item button {
+            padding: 0.5rem 1rem;
+            width: auto;
+            font-size: 0.9rem;
+        }
+
+        .word-item button:first-of-type {
+            background: #3498db;
+        }
+
+        .word-item button:last-of-type {
+            background: #2ecc71;
+        }
+
+        .word-item button:nth-of-type(3) {
+            background: #e74c3c; /* Red for Delete */
+        }
+
+        .word-item button:nth-of-type(3):hover {
+            background: #c0392b;
+        }
+
+        /* Responsive Design for Modals */
+        @media (min-width: 1024px) {
+            /* Desktop: Full layout with buttons split */
+            .card-row {
+                gap: 2rem;
+            }
+
+            .card-container {
+                max-width: 380px;
+            }
+
+            .info {
+                max-width: 400px;
+            }
+
+            .buttons {
+                gap: 1rem;
+            }
+
+            .button-group {
+                flex-wrap: nowrap;
+            }
+
+            button {
+                min-width: 140px;
+            }
+
+            #addWordModal, #viewWordsModal {
+                padding: 2rem;
+                max-width: 480px;
+                width: 90%;
+            }
+
+            #viewWordsModal {
+                max-width: 600px;
+            }
+
+            #addWordModal h3, #viewWordsModal h3 {
+                font-size: 1.75rem;
+            }
+
+            #addWordModal label, #addWordModal input, #viewWordsModal input {
+                font-size: 1rem;
+            }
+
+            #addWordModal button, #viewWordsModal button {
+                font-size: 1rem;
+                padding: 0.85rem 1.5rem;
+            }
+
+            #wordError, #fieldsError {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            /* Tablet: Adjusted modal size and content */
+            .card-row {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+            }
+
+            .card-container {
+                max-width: 320px;
+                height: 200px;
+            }
+
+            .info {
+                max-width: 350px;
+                font-size: 1rem;
+                padding: 0.5rem 1.25rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .button-separator {
+                display: none;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 0.65rem 1.25rem;
+                min-width: 100px;
+            }
+
+            #addWordModal, #viewWordsModal {
+                padding: 1.25rem;
+                width: 85%;
+                max-width: 450px;
+            }
+
+            #viewWordsModal {
+                max-width: 550px;
+            }
+
+            #addWordModal h3, #viewWordsModal h3 {
+                font-size: 1.5rem;
+                margin-bottom: 1.25rem;
+            }
+
+            #addWordModal label, #addWordModal input, #viewWordsModal input {
+                font-size: 0.9rem;
+            }
+
+            #addWordModal input {
+                padding: 0.75rem;
+            }
+
+            #addWordModal button, #viewWordsModal button {
+                font-size: 0.9rem;
+                padding: 0.65rem 1.25rem;
+                width: 45%; /* Slightly narrower buttons */
+            }
+
+            #wordError, #fieldsError {
+                font-size: 0.8rem;
+            }
+
+            .word-item {
+                padding: 0.6rem;
+            }
+
+            .word-item button {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            /* Mobile: Full vertical stacking, simplified layout for modals */
+            body {
+                padding: 0.5rem;
+            }
+
+            .card-row {
+                flex-direction: column;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-container {
+                max-width: 100%;
+                height: 180px;
+                width: 90%;
+            }
+
+            .info {
+                width: 90%;
+                max-width: 100%;
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 90%;
+            }
+
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .button-separator {
+                display: none;
+            }
+
+            button {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+                min-width: 100%;
+                width: 100%;
+            }
+
+            #addWordModal, #viewWordsModal {
+                width: 95%;
+                padding: 1rem;
+                max-width: none; /* Full width on mobile */
+            }
+
+            #addWordModal h3, #viewWordsModal h3 {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+
+            #addWordModal label, #addWordModal input, #viewWordsModal input {
+                font-size: 0.8rem;
+            }
+
+            #addWordModal input {
+                padding: 0.6rem;
+            }
+
+            #addWordModal .modal-buttons, #viewWordsModal .modal-buttons {
+                gap: 0.75rem;
+                flex-direction: column; /* Stack buttons vertically on mobile */
+            }
+
+            #addWordModal button, #viewWordsModal button {
+                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+                width: 100%; /* Full width buttons on mobile */
+            }
+
+            #wordError, #fieldsError {
+                font-size: 0.7rem;
+            }
+
+            .word-item {
+                padding: 0.5rem;
+            }
+
+            .word-item-buttons {
+                flex-direction: column; /* Stack buttons vertically on mobile */
+                gap: 0.4rem;
+            }
+
+            .word-item button {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.7rem;
+                width: 100%; /* Full width buttons on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="info" id="cardInfo" style="text-align: center;"></div>
+
+<div class="card-row">
+    <button style="width: 150px;" onclick="prevCard()">← Previous</button>
+    <div class="card-container">
+        <div class="card" id="flashcard">
+            <div class="card-front" id="cardFront"></div>
+            <div class="card-back" id="cardBack"></div>
+        </div>
+    </div>
+    <button style="width: 150px;" onclick="nextCard()">Next →</button>
+</div>
+
+<div class="buttons">
+    <div class="button-group">
+        <button class="add-btn" onclick="showAddWordModal()">Add Word</button>
+        <button class="edit-btn" onclick="showEditWordModal()">Edit Word</button>
+        <button class="delete-btn" onclick="deleteCurrentWord()">Delete Word</button>
+    </div>
+    <!-- <div class="button-separator"></div> -->
+    <div class="button-group">
+        <button class="shuffle-btn" id="shuffleButton" onclick="toggleShuffle()">Shuffle</button>
+        <button class="view-btn" onclick="showViewWordsModal()">View All Words</button>
+    </div>
+</div>
+
+<div id="addWordModal">
+    <h3 id="modalTitle">Add New Word</h3>
+    <label for="newWord" class="required">Word</label>
+    <input type="text" id="newWord" placeholder="Word">
+    <label for="newIPA" class="required">IPA</label>
+    <input type="text" id="newIPA" placeholder="IPA" disabled>
+    <label for="newType" class="required">Type (Noun, Verb, etc.)</label>
+    <input type="text" id="newType" placeholder="Type (Noun, Verb, etc.)" disabled>
+    <label for="newMeaning" class="required">Meaning in Vietnamese</label>
+    <input type="text" id="newMeaning" placeholder="Meaning in Vietnamese" disabled>
+    <label for="newExample" class="required">Example Sentence</label>
+    <input type="text" id="newExample" placeholder="Example Sentence" disabled>
+    <label for="newExampleMeaning" class="required">Meaning of Example Sentence</label>
+    <input type="text" id="newExampleMeaning" placeholder="Meaning of Example Sentence" disabled>
+    <div id="wordError">This word already exists in the vocabulary!</div>
+    <div id="fieldsError">Please fill all fields!</div>
+    <div class="modal-buttons">
+        <button id="saveButton" onclick="addNewWord()" disabled>Save</button>
+        <button onclick="closeAddWordModal()">Cancel</button>
+    </div>
+</div>
+
+<div id="viewWordsModal">
+    <h3>View All Words</h3>
+    <input type="text" id="searchWords" placeholder="Search words...">
+    <div id="wordList"></div>
+    <div class="modal-buttons">
+        <button onclick="closeViewWordsModal()">Close</button>
+    </div>
+</div>
+
+<script>
+    let vocabulary = [
+        { word: "ability", ipa: "/əˈbɪləti/", type: "noun", example: "She has the ability to solve complex problems.", meaning: "Khả năng", exampleMeaning: "Cô ấy có khả năng giải quyết các vấn đề phức tạp." },
+        { word: "belongings", ipa: "/bɪˈlɒŋɪŋz/", type: "noun", example: "He packed all his belongings in a suitcase.", meaning: "Tài sản, đồ dùng cá nhân", exampleMeaning: "Anh ấy đóng gói tất cả tài sản của mình vào một chiếc vali." },
+        { word: "calendar", ipa: "/ˈkælɪndər/", type: "noun", example: "She marked the meeting date on her calendar.", meaning: "Lịch", exampleMeaning: "Cô ấy đánh dấu ngày họp trên lịch của mình." },
+        { word: "can", ipa: "/kæn/", type: "verb", example: "She can play the piano very well.", meaning: "Có thể", exampleMeaning: "Cô ấy có thể chơi piano rất giỏi." },
+        { word: "check", ipa: "/tʃek/", type: "verb", example: "Please check your email for updates.", meaning: "Kiểm tra", exampleMeaning: "Vui lòng kiểm tra email để cập nhật thông tin." },
+        { word: "confusing", ipa: "/kənˈfjuːzɪŋ/", type: "adjective", example: "The instructions were very confusing.", meaning: "Làm bối rối", exampleMeaning: "Hướng dẫn rất làm bối rối." },
+        { word: "contribute", ipa: "/kənˈtrɪbjuːt/", type: "verb", example: "He contributed money to the charity.", meaning: "Góp phần, đóng góp", exampleMeaning: "Anh ấy đã đóng góp tiền cho tổ chức từ thiện." },
+        { word: "donation", ipa: "/doʊˈneɪʃən/", type: "noun", example: "Their donation helped build a new school.", meaning: "Sự đóng góp, quyên góp", exampleMeaning: "Sự đóng góp của họ đã giúp xây dựng một trường học mới." },
+        { word: "evaluate", ipa: "/ɪˈvæljuːeɪt/", type: "verb", example: "The teacher will evaluate the students’ projects.", meaning: "Đánh giá", exampleMeaning: "Giáo viên sẽ đánh giá các dự án của học sinh." },
+        { word: "feedback", ipa: "/ˈfiːdbæk/", type: "noun", example: "We need feedback to improve our service.", meaning: "Phản hồi", exampleMeaning: "Chúng tôi cần phản hồi để cải thiện dịch vụ của mình." },
+        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
+        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
+        { word: "membership", ipa: "/ˈmɛmbərʃɪp/", type: "noun", example: "Her membership in the club lasts for one year.", meaning: "Hội viên, tư cách thành viên", exampleMeaning: "Tư cách thành viên của cô ấy trong câu lạc bộ kéo dài một năm." },
+        { word: "unlock", ipa: "/ʌnˈlɒk/", type: "verb", example: "He used a key to unlock the door.", meaning: "Mở khóa", exampleMeaning: "Anh ấy dùng chìa khóa để mở khóa cửa." },
+        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
+        { word: "postpone", ipa: "/poʊstˈpoʊn/", type: "verb", example: "They postponed the meeting until next week.", meaning: "Hoãn lại", exampleMeaning: "Họ đã hoãn cuộc họp đến tuần tới." },
+        { word: "provide", ipa: "/prəˈvaɪd/", type: "verb", example: "The company provides free training for employees.", meaning: "Cung cấp", exampleMeaning: "Công ty cung cấp đào tạo miễn phí cho nhân viên." },
+        { word: "quality", ipa: "/ˈkwɒlɪti/", type: "noun", example: "The quality of this product is excellent.", meaning: "Chất lượng", exampleMeaning: "Chất lượng của sản phẩm này rất tuyệt vời." },
+        { word: "remodel", ipa: "/ˌriːˈmɒdəl/", type: "verb", example: "They decided to remodel their kitchen.", meaning: "Sửa chữa, cải tạo", exampleMeaning: "Họ quyết định cải tạo nhà bếp của mình." },
+        { word: "renew", ipa: "/rɪˈnuː/", type: "verb", example: "We need to renew our membership next month.", meaning: "Gia hạn, làm mới", exampleMeaning: "Chúng tôi cần gia hạn tư cách thành viên vào tháng tới." },
+        { word: "reservation", ipa: "/ˌrɛzərˈveɪʃən/", type: "noun", example: "I made a reservation at the restaurant for tonight.", meaning: "Đặt chỗ", exampleMeaning: "Tôi đã đặt chỗ tại nhà hàng cho tối nay." },
+        { word: "subscription", ipa: "/səbˈskrɪpʃən/", type: "noun", example: "His subscription to the magazine expires next year.", meaning: "Đăng ký, thuê bao", exampleMeaning: "Đăng ký của anh ấy với tạp chí sẽ hết hạn vào năm tới." },
+        { word: "thank", ipa: "/θæŋk/", type: "verb", example: "She thanked him for his help.", meaning: "Cảm ơn", exampleMeaning: "Cô ấy cảm ơn anh ấy vì sự giúp đỡ của anh ấy." },
+        { word: "about", ipa: "/əˈbaʊt/", type: "preposition/adverb", example: "Let’s talk about the project.", meaning: "Về, khoảng", exampleMeaning: "Hãy nói về dự án." },
+        { word: "absent", ipa: "/ˈæbsənt/", type: "adjective", example: "He was absent from the meeting.", meaning: "Vắng mặt", exampleMeaning: "Anh ấy vắng mặt trong cuộc họp." },
+        { word: "accept", ipa: "/əkˈsɛpt/", type: "verb", example: "She accepted the job offer.", meaning: "Chấp nhận", exampleMeaning: "Cô ấy đã chấp nhận lời mời làm việc." },
+        { word: "after", ipa: "/ˈæftər/", type: "preposition", example: "We’ll meet after lunch.", meaning: "Sau", exampleMeaning: "Chúng ta sẽ gặp nhau sau bữa trưa." },
+        { word: "almost", ipa: "/ˈɔːlmoʊst/", type: "adverb", example: "It’s almost time to leave.", meaning: "Gần như, hầu như", exampleMeaning: "Gần đến giờ ra đi rồi." },
+        { word: "anything", ipa: "/ˈɛnɪθɪŋ/", type: "pronoun", example: "Do you want anything from the store?", meaning: "Bất cứ thứ gì", exampleMeaning: "Bạn có muốn mua gì từ cửa hàng không?" },
+        { word: "anywhere", ipa: "/ˈɛnɪwɛr/", type: "adverb", example: "I can’t find my keys anywhere.", meaning: "Bất cứ nơi nào", exampleMeaning: "Tôi không thể tìm thấy chìa khóa của mình ở bất cứ đâu." },
+        { word: "apartment", ipa: "/əˈpɑːrtmənt/", type: "noun", example: "They live in a small apartment downtown.", meaning: "Căn hộ", exampleMeaning: "Họ sống trong một căn hộ nhỏ ở trung tâm thành phố." },
+        { word: "appointment", ipa: "/əˈpɔɪntmənt/", type: "noun", example: "I have a doctor’s appointment at 3 PM.", meaning: "Cuộc hẹn", exampleMeaning: "Tôi có cuộc hẹn với bác sĩ lúc 3 giờ chiều." },
+        { word: "approve", ipa: "/əˈpruːv/", type: "verb", example: "The manager approved the budget proposal.", meaning: "Phê duyệt", exampleMeaning: "Quản lý đã phê duyệt đề xuất ngân sách." },
+        { word: "arrange", ipa: "/əˈreɪndʒ/", type: "verb", example: "She arranged a meeting for next week.", meaning: "Sắp xếp", exampleMeaning: "Cô ấy đã sắp xếp một cuộc họp cho tuần tới." },
+        { word: "arrive", ipa: "/əˈraɪv/", type: "verb", example: "They will arrive at the airport at 6 PM.", meaning: "Đến", exampleMeaning: "Họ sẽ đến sân bay lúc 6 giờ tối." },
+        { word: "assistant", ipa: "/əˈsɪstənt/", type: "noun", example: "The assistant helped me with my questions.", meaning: "Trợ lý", exampleMeaning: "Trợ lý đã giúp tôi với các câu hỏi của mình." },
+        { word: "attend", ipa: "/əˈtɛnd/", type: "verb", example: "He will attend the conference tomorrow.", meaning: "Tham dự", exampleMeaning: "Anh ấy sẽ tham dự hội nghị vào ngày mai." },
+        { word: "available", ipa: "/əˈveɪləbəl/", type: "adjective", example: "Is this product available in stores?", meaning: "Có sẵn", exampleMeaning: "Sản phẩm này có sẵn ở cửa hàng không?" },
+        { word: "avoid", ipa: "/əˈvɔɪd/", type: "verb", example: "She tried to avoid the traffic jam.", meaning: "Tránh", exampleMeaning: "Cô ấy cố gắng tránh tắc đường." },
+        { word: "aware", ipa: "/əˈwɛr/", type: "adjective", example: "He was aware of the risks involved.", meaning: "Nhận thức, biết", exampleMeaning: "Anh ấy nhận thức về các rủi ro liên quan." },
+        { word: "back", ipa: "/bæk/", type: "noun/adverb", example: "I have pain in my back.", meaning: "Lưng, phía sau", exampleMeaning: "Tôi bị đau ở lưng." },
+        { word: "bank", ipa: "/bæŋk/", type: "noun", example: "She deposited money in the bank.", meaning: "Ngân hàng", exampleMeaning: "Cô ấy đã gửi tiền vào ngân hàng." },
+        { word: "beach", ipa: "/biːtʃ/", type: "noun", example: "We spent the day at the beach.", meaning: "Bãi biển", exampleMeaning: "Chúng tôi đã dành cả ngày ở bãi biển." },
+        { word: "belong", ipa: "/bɪˈlɒŋ/", type: "verb", example: "This book belongs to me.", meaning: "Thuộc về", exampleMeaning: "Cuốn sách này thuộc về tôi." },
+        { word: "book", ipa: "/bʊk/", type: "noun/verb", example: "I booked a flight to Paris.", meaning: "Sách, đặt chỗ", exampleMeaning: "Tôi đã đặt một chuyến bay đến Paris." },
+        { word: "break", ipa: "/breɪk/", type: "verb/noun", example: "Let’s take a break after work.", meaning: "Nghỉ ngơi, phá vỡ", exampleMeaning: "Hãy nghỉ ngơi sau khi làm việc." },
+        { word: "bring", ipa: "/brɪŋ/", type: "verb", example: "Can you bring the documents to the meeting?", meaning: "Mang, đem", exampleMeaning: "Bạn có thể mang tài liệu đến cuộc họp không?" },
+        { word: "building", ipa: "/ˈbɪldɪŋ/", type: "noun", example: "The building has 20 floors.", meaning: "Tòa nhà", exampleMeaning: "Tòa nhà có 20 tầng." },
+        { word: "busy", ipa: "/ˈbɪzi/", type: "adjective", example: "She is too busy to talk right now.", meaning: "Bận rộn", exampleMeaning: "Cô ấy quá bận để nói chuyện ngay bây giờ." },
+        { word: "buy", ipa: "/baɪ/", type: "verb", example: "I want to buy a new phone.", meaning: "Mua", exampleMeaning: "Tôi muốn mua một chiếc điện thoại mới." },
+        { word: "cabinet", ipa: "/ˈkæbɪnɪt/", type: "noun", example: "The documents are in the cabinet.", meaning: "Tủ, nội các", exampleMeaning: "Các tài liệu nằm trong tủ." },
+        { word: "call", ipa: "/kɔːl/", type: "verb/noun", example: "I’ll call you later.", meaning: "Gọi, cuộc gọi", exampleMeaning: "Tôi sẽ gọi bạn sau." },
+        { word: "car", ipa: "/kɑːr/", type: "noun", example: "He drives a red car.", meaning: "Xe hơi", exampleMeaning: "Anh ấy lái một chiếc xe hơi màu đỏ." },
+        { word: "cash register", ipa: "/kæʃ ˈrɛdʒɪstər/", type: "noun", example: "The cashier scanned items at the cash register.", meaning: "Máy thu tiền", exampleMeaning: "Nhân viên thu ngân quét các mặt hàng tại máy thu tiền." },
+        { word: "catalog", ipa: "/ˈkætəlɒg/", type: "noun", example: "I found the item in the catalog.", meaning: "Danh mục, danh sách", exampleMeaning: "Tôi tìm thấy món đồ trong danh mục." },
+        { word: "catch", ipa: "/kætʃ/", type: "verb", example: "Can you catch the ball?", meaning: "Bắt, chụp", exampleMeaning: "Bạn có thể bắt quả bóng không?" },
+        { word: "ceremony", ipa: "/ˈsɛrɪmoʊni/", type: "noun", example: "The graduation ceremony was beautiful.", meaning: "Lễ, nghi thức", exampleMeaning: "Lễ tốt nghiệp rất đẹp." },
+        { word: "change", ipa: "/tʃeɪndʒ/", type: "verb/noun", example: "We need to change our plans.", meaning: "Thay đổi, sự thay đổi", exampleMeaning: "Chúng ta cần thay đổi kế hoạch của mình." },
+        { word: "class", ipa: "/klæs/", type: "noun", example: "She teaches a history class.", meaning: "Lớp học", exampleMeaning: "Cô ấy dạy một lớp lịch sử." },
+        { word: "client", ipa: "/ˈklaɪənt/", type: "noun", example: "The lawyer met with a new client.", meaning: "Khách hàng, thân chủ", exampleMeaning: "Luật sư đã gặp một thân chủ mới." },
+        { word: "close", ipa: "/kloʊz/", type: "verb/adjective", example: "Please close the door.", meaning: "Đóng, gần", exampleMeaning: "Vui lòng đóng cửa lại." },
+        { word: "coffee", ipa: "/ˈkɒfi/", type: "noun", example: "I drink coffee every morning.", meaning: "Cà phê", exampleMeaning: "Tôi uống cà phê mỗi sáng." },
+        { word: "cold", ipa: "/koʊld/", type: "adjective", example: "It’s very cold outside today.", meaning: "Lạnh", exampleMeaning: "Hôm nay bên ngoài rất lạnh." },
+        { word: "color", ipa: "/ˈkʌlər/", type: "noun", example: "What color is your car?", meaning: "Màu sắc", exampleMeaning: "Xe của bạn màu gì?" },
+        { word: "come back", ipa: "/kʌm bæk/", type: "verb", example: "She will come back tomorrow.", meaning: "Quay lại", exampleMeaning: "Cô ấy sẽ quay lại vào ngày mai." },
+        { word: "coming", ipa: "/ˈkʌmɪŋ/", type: "verb/adjective", example: "The coming week will be busy.", meaning: "Đang đến, sắp đến", exampleMeaning: "Tuần sắp tới sẽ bận rộn." },
+        { word: "company", ipa: "/ˈkʌmpəni/", type: "noun", example: "She works for a tech company.", meaning: "Công ty", exampleMeaning: "Cô ấy làm việc cho một công ty công nghệ." },
+        { word: "conference", ipa: "/ˈkɒnfərəns/", type: "noun", example: "The conference will be held online.", meaning: "Hội nghị, hội thảo", exampleMeaning: "Hội nghị sẽ được tổ chức trực tuyến." },
+        { word: "confirm", ipa: "/kənˈfɜːrm/", type: "verb", example: "Please confirm your attendance.", meaning: "Xác nhận", exampleMeaning: "Vui lòng xác nhận sự tham dự của bạn." },
+        { word: "considering", ipa: "/kənˈsɪdərɪŋ/", type: "verb", example: "We are considering a new strategy.", meaning: "Xem xét, cân nhắc", exampleMeaning: "Chúng tôi đang xem xét một chiến lược mới." },
+        { word: "construction", ipa: "/kənˈstrʌkʃən/", type: "noun", example: "The construction of the bridge took two years.", meaning: "Xây dựng", exampleMeaning: "Việc xây dựng cây cầu mất hai năm." },
+        { word: "convention", ipa: "/kənˈvɛnʃən/", type: "noun", example: "The convention attracted thousands of people.", meaning: "Hội nghị, đại hội", exampleMeaning: "Đại hội đã thu hút hàng nghìn người." },
+        { word: "copy", ipa: "/ˈkɒpi/", type: "noun/verb", example: "Can you make a copy of this document?", meaning: "Bản sao, sao chép", exampleMeaning: "Bạn có thể sao chép tài liệu này không?" },
+        { word: "correct", ipa: "/kəˈrɛkt/", type: "adjective/verb", example: "Is this answer correct?", meaning: "Đúng, sửa lại", exampleMeaning: "Câu trả lời này có đúng không?" },
+        { word: "cost", ipa: "/kɔːst/", type: "noun/verb", example: "The cost of the trip was high.", meaning: "Chi phí", exampleMeaning: "Chi phí của chuyến đi rất cao." },
+        { word: "country", ipa: "/ˈkʌntri/", type: "noun", example: "She lives in a small country town.", meaning: "Quốc gia, vùng quê", exampleMeaning: "Cô ấy sống ở một thị trấn nhỏ ở vùng quê." },
+        { word: "course", ipa: "/kɔːrs/", type: "noun", example: "I’m taking a cooking course this summer.", meaning: "Khóa học, lộ trình", exampleMeaning: "Tôi đang tham gia một khóa học nấu ăn mùa hè này." },
+        { word: "cover", ipa: "/ˈkʌvər/", type: "verb/noun", example: "The book cover is very colorful.", meaning: "Che phủ, bìa", exampleMeaning: "Bìa sách rất sặc sỡ." },
+        { word: "customer", ipa: "/ˈkʌstəmər/", type: "noun", example: "The customer complained about the service.", meaning: "Khách hàng", exampleMeaning: "Khách hàng phàn nàn về dịch vụ." },
+        { word: "date", ipa: "/deɪt/", type: "noun/verb", example: "What’s the date today?", meaning: "Ngày, hẹn hò", exampleMeaning: "Hôm nay là ngày bao nhiêu?" },
+        { word: "deadline", ipa: "/ˈdɛdlaɪn/", type: "noun", example: "The project deadline is next Friday.", meaning: "Hạn chót", exampleMeaning: "Hạn chót của dự án là thứ Sáu tới." },
+        { word: "decision", ipa: "/dɪˈsɪʒən/", type: "noun", example: "We made a decision to move forward.", meaning: "Quyết định", exampleMeaning: "Chúng tôi đã đưa ra quyết định tiến lên." },
+        { word: "decrease", ipa: "/dɪˈkriːs/", type: "verb/noun", example: "The temperature will decrease later.", meaning: "Giảm, sự giảm", exampleMeaning: "Nhiệt độ sẽ giảm vào sau này." },
+        { word: "deliver", ipa: "/dɪˈlɪvər/", type: "verb", example: "The package was delivered yesterday.", meaning: "Giao hàng", exampleMeaning: "Gói hàng đã được giao hôm qua." },
+        { word: "demand", ipa: "/dɪˈmænd/", type: "noun/verb", example: "There is a high demand for electric cars.", meaning: "Nhu cầu, đòi hỏi", exampleMeaning: "Có nhu cầu lớn về xe điện." },
+        { word: "department", ipa: "/dɪˈpɑːrtmənt/", type: "noun", example: "She works in the marketing department.", meaning: "Bộ phận, phòng ban", exampleMeaning: "Cô ấy làm việc ở bộ phận tiếp thị." },
+        { word: "destination", ipa: "/ˌdɛstɪˈneɪʃən/", type: "noun", example: "Paris is our destination for the trip.", meaning: "Điểm đến", exampleMeaning: "Paris là điểm đến của chuyến đi của chúng tôi." },
+        { word: "develop", ipa: "/dɪˈvɛləp/", type: "verb", example: "The company is developing a new product.", meaning: "Phát triển", exampleMeaning: "Công ty đang phát triển một sản phẩm mới." },
+        { word: "direct", ipa: "/dɪˈrɛkt/", type: "adjective/verb", example: "He gave me direct instructions.", meaning: "Trực tiếp, chỉ đạo", exampleMeaning: "Anh ấy đã đưa cho tôi các hướng dẫn trực tiếp." },
+        { word: "discussion", ipa: "/dɪˈskʌʃən/", type: "noun", example: "We had a long discussion about the project.", meaning: "Thảo luận", exampleMeaning: "Chúng tôi đã có một cuộc thảo luận dài về dự án." },
+        { word: "distribute", ipa: "/dɪˈstrɪbjuːt/", type: "verb", example: "They distributed flyers in the neighborhood.", meaning: "Phân phối, phát", exampleMeaning: "Họ đã phát tờ rơi trong khu dân cư." },
+        { word: "do", ipa: "/duː/", type: "verb", example: "I need to do my homework.", meaning: "Làm", exampleMeaning: "Tôi cần làm bài tập về nhà." },
+        { word: "document", ipa: "/ˈdɒkjumənt/", type: "noun", example: "Please bring the document to the meeting.", meaning: "Tài liệu", exampleMeaning: "Vui lòng mang tài liệu đến cuộc họp." },
+        { word: "done", ipa: "/dʌn/", type: "verb", example: "The work is done.", meaning: "Hoàn thành", exampleMeaning: "Công việc đã hoàn thành." },
+        { word: "don’t", ipa: "/doʊnt/", type: "contraction", example: "Don’t forget to call me.", meaning: "Đừng", exampleMeaning: "Đừng quên gọi cho tôi." },
+        { word: "drive", ipa: "/draɪv/", type: "verb/noun", example: "He likes to drive fast cars.", meaning: "Lái xe, sự thúc đẩy", exampleMeaning: "Anh ấy thích lái xe hơi nhanh." },
+        { word: "due", ipa: "/duː/", type: "adjective", example: "The payment is due tomorrow.", meaning: "Đến hạn", exampleMeaning: "Thanh toán đến hạn vào ngày mai." },
+        { word: "each other", ipa: "/iːtʃ ˈʌðər/", type: "pronoun", example: "They help each other with their work.", meaning: "Nhau", exampleMeaning: "Họ giúp đỡ lẫn nhau trong công việc." },
+        { word: "early", ipa: "/ˈɜːrli/", type: "adverb/adjective", example: "We arrived early for the movie.", meaning: "Sớm", exampleMeaning: "Chúng tôi đến sớm cho buổi chiếu phim." },
+        { word: "edit", ipa: "/ˈɛdɪt/", type: "verb", example: "She edited the article before publishing.", meaning: "Sửa đổi, biên tập", exampleMeaning: "Cô ấy đã chỉnh sửa bài viết trước khi xuất bản." },
+        { word: "efficient", ipa: "/ɪˈfɪʃənt/", type: "adjective", example: "The new system is very efficient.", meaning: "Hiệu quả", exampleMeaning: "Hệ thống mới rất hiệu quả." },
+        { word: "email", ipa: "/ˈiːmeɪl/", type: "noun/verb", example: "I sent you an email yesterday.", meaning: "Email", exampleMeaning: "Tôi đã gửi cho bạn một email hôm qua." },
+        { word: "engine", ipa: "/ˈɛndʒɪn/", type: "noun", example: "The engine of the car needs repair.", meaning: "Động cơ", exampleMeaning: "Động cơ của xe cần được sửa chữa." },
+        { word: "estimated", ipa: "/ˈɛstɪmeɪtɪd/", type: "adjective", example: "The estimated cost is $500.", meaning: "Ước tính", exampleMeaning: "Chi phí ước tính là 500 đô la." },
+        { word: "exhibition", ipa: "/ˌɛksɪˈbɪʃən/", type: "noun", example: "The art exhibition attracted many visitors.", meaning: "Triển lãm", exampleMeaning: "Triển lãm nghệ thuật đã thu hút nhiều khách tham quan." },
+        { word: "expand", ipa: "/ɪkˈspænd/", type: "verb", example: "The company plans to expand overseas.", meaning: "Mở rộng", exampleMeaning: "Công ty dự định mở rộng ra nước ngoài." },
+        { word: "extend", ipa: "/ɪkˈstɛnd/", type: "verb", example: "They extended the deadline by one week.", meaning: "Kéo dài", exampleMeaning: "Họ đã kéo dài hạn chót thêm một tuần." },
+        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
+        { word: "fan", ipa: "/fæn/", type: "noun", example: "The fan keeps the room cool.", meaning: "Quạt, người hâm mộ", exampleMeaning: "Cái quạt giữ cho phòng mát mẻ." },
+        { word: "fax", ipa: "/fæks/", type: "noun/verb", example: "Please fax the document to the office.", meaning: "Fax, gửi fax", exampleMeaning: "Vui lòng fax tài liệu đến văn phòng." },
+        { word: "fill", ipa: "/fɪl/", type: "verb", example: "Can you fill this form out?", meaning: "Điền, lấp đầy", exampleMeaning: "Bạn có thể điền vào mẫu này không?" },
+        { word: "finding", ipa: "/ˈfaɪndɪŋ/", type: "noun", example: "The finding surprised the researchers.", meaning: "Sự khám phá, phát hiện", exampleMeaning: "Phát hiện đã làm ngạc nhiên các nhà nghiên cứu." },
+        { word: "finished", ipa: "/ˈfɪnɪʃt/", type: "adjective", example: "The project is finished on time.", meaning: "Hoàn thành", exampleMeaning: "Dự án đã hoàn thành đúng hạn." },
+        { word: "fix", ipa: "/fɪks/", type: "verb", example: "He fixed the broken chair.", meaning: "Sửa chữa", exampleMeaning: "Anh ấy đã sửa chiếc ghế bị hỏng." },
+        { word: "flight", ipa: "/flaɪt/", type: "noun", example: "Our flight leaves at 8 AM.", meaning: "Chuyến bay", exampleMeaning: "Chuyến bay của chúng tôi cất cánh lúc 8 giờ sáng." },
+        { word: "follow", ipa: "/ˈfɒloʊ/", type: "verb", example: "Please follow the instructions carefully.", meaning: "Theo sau, làm theo", exampleMeaning: "Vui lòng làm theo hướng dẫn cẩn thận." },
+        { word: "forecast", ipa: "/ˈfɔːrkæst/", type: "noun/verb", example: "The weather forecast predicts rain.", meaning: "Dự báo", exampleMeaning: "Dự báo thời tiết dự đoán có mưa." },
+        { word: "form", ipa: "/fɔːrm/", type: "noun/verb", example: "Fill out this form to apply.", meaning: "Biểu mẫu, hình dạng", exampleMeaning: "Điền vào biểu mẫu này để nộp đơn." },
+        { word: "free", ipa: "/friː/", type: "adjective", example: "This service is free of charge.", meaning: "Miễn phí, tự do", exampleMeaning: "Dịch vụ này miễn phí." },
+        { word: "friday", ipa: "/ˈfraɪdeɪ/", type: "noun", example: "The meeting is scheduled for Friday.", meaning: "Thứ Sáu", exampleMeaning: "Cuộc họp được lên lịch vào Thứ Sáu." },
+        { word: "get", ipa: "/ɡɛt/", type: "verb", example: "I need to get some groceries.", meaning: "Lấy, nhận", exampleMeaning: "Tôi cần đi lấy một số thực phẩm." },
+        { word: "go", ipa: "/ɡoʊ/", type: "verb", example: "Let’s go to the park.", meaning: "Đi", exampleMeaning: "Hãy đi công viên." },
+        { word: "gone", ipa: "/ɡɒn/", type: "verb", example: "She has gone to the store.", meaning: "Đã đi", exampleMeaning: "Cô ấy đã đi đến cửa hàng." },
+        { word: "guideline", ipa: "/ˈɡaɪdlaɪn/", type: "noun", example: "Follow the guidelines for safety.", meaning: "Hướng dẫn", exampleMeaning: "Tuân theo hướng dẫn để đảm bảo an toàn." },
+        { word: "hair cut", ipa: "/hɛr kʌt/", type: "noun", example: "I need a haircut before the party.", meaning: "Cắt tóc", exampleMeaning: "Tôi cần cắt tóc trước bữa tiệc." },
+        { word: "hanging", ipa: "/ˈhæŋɪŋ/", type: "verb/adjective", example: "The picture is hanging on the wall.", meaning: "Treo, đang treo", exampleMeaning: "Bức tranh đang treo trên tường." },
+        { word: "hard", ipa: "/hɑːrd/", type: "adjective", example: "This test is very hard.", meaning: "Khó, cứng", exampleMeaning: "Bài kiểm tra này rất khó." },
+        { word: "held", ipa: "/hɛld/", type: "verb", example: "The event was held last weekend.", meaning: "Được tổ chức", exampleMeaning: "Sự kiện đã được tổ chức cuối tuần trước." },
+        { word: "help", ipa: "/hɛlp/", type: "verb/noun", example: "Can you help me with this task?", meaning: "Giúp đỡ", exampleMeaning: "Bạn có thể giúp tôi với công việc này không?" },
+        { word: "helpful", ipa: "/ˈhɛlpfəl/", type: "adjective", example: "Her advice was very helpful.", meaning: "Hữu ích", exampleMeaning: "Lời khuyên của cô ấy rất hữu ích." },
+        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
+        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
+        { word: "hope", ipa: "/hoʊp/", type: "verb/noun", example: "I hope it doesn’t rain today.", meaning: "Hy vọng", exampleMeaning: "Tôi hy vọng hôm nay không mưa." },
+        { word: "hot", ipa: "/hɒt/", type: "adjective", example: "It’s very hot outside.", meaning: "Nóng", exampleMeaning: "Bên ngoài rất nóng." },
+        { word: "idea", ipa: "/aɪˈdiːə/", type: "noun", example: "She had a great idea for the project.", meaning: "Ý tưởng", exampleMeaning: "Cô ấy có một ý tưởng tuyệt vời cho dự án." },
+        { word: "if", ipa: "/ɪf/", type: "conjunction", example: "I’ll go if it doesn’t rain.", meaning: "Nếu", exampleMeaning: "Tôi sẽ đi nếu trời không mưa." },
+        { word: "in time", ipa: "/ɪn taɪm/", type: "adverb", example: "We arrived in time for the movie.", meaning: "Đúng giờ", exampleMeaning: "Chúng tôi đến đúng giờ cho buổi chiếu phim." },
+        { word: "in-charge", ipa: "/ɪn tʃɑːrdʒ/", type: "noun/adjective", example: "She is in charge of the project.", meaning: "Phụ trách", exampleMeaning: "Cô ấy phụ trách dự án." },
+        { word: "indoor", ipa: "/ˈɪndɔːr/", type: "adjective", example: "The event will be held indoor due to rain.", meaning: "Trong nhà", exampleMeaning: "Sự kiện sẽ được tổ chức trong nhà do trời mưa." },
+        { word: "informative", ipa: "/ɪnˈfɔːrmətɪv/", type: "adjective", example: "The presentation was very informative.", meaning: "Hữu ích, cung cấp thông tin", exampleMeaning: "Bài thuyết trình rất hữu ích." },
+        { word: "ink", ipa: "/ɪŋk/", type: "noun", example: "The pen ran out of ink.", meaning: "Mực", exampleMeaning: "Cây bút hết mực rồi." },
+        { word: "instruction", ipa: "/ɪnˈstrʌkʃən/", type: "noun", example: "Follow the instructions carefully.", meaning: "Hướng dẫn", exampleMeaning: "Làm theo hướng dẫn cẩn thận." },
+        { word: "ride", ipa: "/raɪd/", type: "noun/verb", example: "We took a ride on the roller coaster.", meaning: "Chuyến đi, cưỡi", exampleMeaning: "Chúng tôi đã đi tàu lượn siêu tốc." },
+        { word: "right", ipa: "/raɪt/", type: "adjective/adverb", example: "You are absolutely right.", meaning: "Đúng, bên phải", exampleMeaning: "Bạn hoàn toàn đúng." },
+        { word: "road", ipa: "/roʊd/", type: "noun", example: "The road to the city is busy.", meaning: "Đường", exampleMeaning: "Con đường đến thành phố rất bận rộn." },
+        { word: "room", ipa: "/ruːm/", type: "noun", example: "We need a bigger room for the meeting.", meaning: "Phòng", exampleMeaning: "Chúng tôi cần một phòng lớn hơn cho cuộc họp." },
+        { word: "run out", ipa: "/rʌn aʊt/", type: "verb", example: "We’ve run out of milk.", meaning: "Hết, cạn kiệt", exampleMeaning: "Chúng tôi đã hết sữa." },
+        { word: "run", ipa: "/rʌn/", type: "verb/noun", example: "She likes to run in the park.", meaning: "Chạy", exampleMeaning: "Cô ấy thích chạy trong công viên." },
+        { word: "sale", ipa: "/seɪl/", type: "noun", example: "The store is having a big sale.", meaning: "Bán, sự giảm giá", exampleMeaning: "Cửa hàng đang có một đợt giảm giá lớn." },
+        { word: "schedule", ipa: "/ˈskɛdʒuːl/", type: "noun/verb", example: "The schedule for the day is packed.", meaning: "Lịch trình", exampleMeaning: "Lịch trình cho ngày hôm nay rất dày đặc." },
+        { word: "seen", ipa: "/siːn/", type: "verb", example: "I have seen that movie before.", meaning: "Đã thấy", exampleMeaning: "Tôi đã xem phim đó trước đây." },
+        { word: "sell", ipa: "/sɛl/", type: "verb", example: "They sell handmade crafts at the market.", meaning: "Bán", exampleMeaning: "Họ bán đồ thủ công tại chợ." },
+        { word: "send", ipa: "/sɛnd/", type: "verb", example: "Please send me the file by email.", meaning: "Gửi", exampleMeaning: "Vui lòng gửi cho tôi file qua email." },
+        { word: "sharing", ipa: "/ˈʃɛərɪŋ/", type: "verb/noun", example: "Sharing knowledge is important.", meaning: "Chia sẻ", exampleMeaning: "Chia sẻ kiến thức là quan trọng." },
+        { word: "shipment", ipa: "/ˈʃɪpmənt/", type: "noun", example: "The shipment arrived late.", meaning: "Lô hàng, chuyến hàng", exampleMeaning: "Lô hàng đến muộn." },
+        { word: "show", ipa: "/ʃoʊ/", type: "verb/noun", example: "Can you show me how to do it?", meaning: "Thể hiện, chương trình", exampleMeaning: "Bạn có thể chỉ tôi cách làm không?" },
+        { word: "sign", ipa: "/saɪn/", type: "noun/verb", example: "Please sign the contract.", meaning: "Dấu hiệu, ký", exampleMeaning: "Vui lòng ký hợp đồng." },
+        { word: "size", ipa: "/saɪz/", type: "noun", example: "What size shirt do you wear?", meaning: "Kích cỡ", exampleMeaning: "Bạn mặc áo kích cỡ nào?" },
+        { word: "soon", ipa: "/suːn/", type: "adverb", example: "We’ll leave soon.", meaning: "Sớm", exampleMeaning: "Chúng ta sẽ rời đi sớm." },
+        { word: "speaker", ipa: "/ˈspiːkər/", type: "noun", example: "The speaker at the conference was inspiring.", meaning: "Người nói, loa", exampleMeaning: "Người nói tại hội nghị rất truyền cảm hứng." },
+        { word: "start", ipa: "/stɑːrt/", type: "verb/noun", example: "The meeting will start at 9 AM.", meaning: "Bắt đầu", exampleMeaning: "Cuộc họp sẽ bắt đầu lúc 9 giờ sáng." },
+        { word: "stay", ipa: "/steɪ/", type: "verb/noun", example: "We plan to stay at a hotel.", meaning: "Ở lại", exampleMeaning: "Chúng tôi dự định ở lại khách sạn." },
+        { word: "stop", ipa: "/stɒp/", type: "verb/noun", example: "Please stop talking.", meaning: "Dừng lại", exampleMeaning: "Vui lòng dừng nói chuyện." },
+        { word: "submit", ipa: "/səbˈmɪt/", type: "verb", example: "You need to submit your application online.", meaning: "Nộp", exampleMeaning: "Bạn cần nộp đơn của mình trực tuyến." },
+        { word: "suggestion", ipa: "/səɡˈdʒɛstʃən/", type: "noun", example: "Her suggestion was very helpful.", meaning: "Gợi ý", exampleMeaning: "Gợi ý của cô ấy rất hữu ích." },
+        { word: "supervisor", ipa: "/ˈsuːpərvaɪzər/", type: "noun", example: "The supervisor oversees the team.", meaning: "Người giám sát", exampleMeaning: "Người giám sát quản lý đội ngũ." },
+        { word: "supply", ipa: "/səˈplaɪ/", type: "verb/noun", example: "We need to supply more materials.", meaning: "Cung cấp, nguồn cung", exampleMeaning: "Chúng tôi cần cung cấp thêm vật liệu." },
+        { word: "suppose", ipa: "/səˈpoʊz/", type: "verb", example: "I suppose you’re right.", meaning: "Giả định, cho rằng", exampleMeaning: "Tôi cho rằng bạn đúng." },
+        { word: "survey", ipa: "/ˈsɜːrveɪ/", type: "noun/verb", example: "They conducted a survey on customer satisfaction.", meaning: "Khảo sát", exampleMeaning: "Họ đã thực hiện một cuộc khảo sát về sự hài lòng của khách hàng." },
+        { word: "system", ipa: "/ˈsɪstəm/", type: "noun", example: "The new system improves efficiency.", meaning: "Hệ thống", exampleMeaning: "Hệ thống mới cải thiện hiệu suất." },
+        { word: "take over", ipa: "/teɪk ˈoʊvər/", type: "verb", example: "She will take over the project next month.", meaning: "Tiếp quản", exampleMeaning: "Cô ấy sẽ tiếp quản dự án vào tháng tới." },
+        { word: "take", ipa: "/teɪk/", type: "verb", example: "Can you take this to the office?", meaning: "Lấy, mang", exampleMeaning: "Bạn có thể mang cái này đến văn phòng không?" },
+        { word: "talk", ipa: "/tɔːk/", type: "verb/noun", example: "Let’s talk about your plans.", meaning: "Nói chuyện", exampleMeaning: "Hãy nói về kế hoạch của bạn." },
+        { word: "taxi", ipa: "/ˈtæksi/", type: "noun", example: "We took a taxi to the airport.", meaning: "Xe taxi", exampleMeaning: "Chúng tôi đã đi taxi đến sân bay." },
+        { word: "tea", ipa: "/tiː/", type: "noun", example: "I prefer tea over coffee.", meaning: "Trà", exampleMeaning: "Tôi thích trà hơn cà phê." },
+        { word: "technician", ipa: "/tɛkˈnɪʃən/", type: "noun", example: "The technician fixed the computer.", meaning: "Kỹ thuật viên", exampleMeaning: "Kỹ thuật viên đã sửa máy tính." },
+        { word: "thank you", ipa: "/θæŋk juː/", type: "phrase", example: "Thank you for your help.", meaning: "Cảm ơn bạn", exampleMeaning: "Cảm ơn bạn vì sự giúp đỡ của bạn." },
+        { word: "think", ipa: "/θɪŋk/", type: "verb", example: "I think it’s a good idea.", meaning: "Nghĩ, suy nghĩ", exampleMeaning: "Tôi nghĩ đó là một ý tưởng hay." },
+        { word: "ticket", ipa: "/ˈtɪkɪt/", type: "noun", example: "I bought a ticket for the concert.", meaning: "Vé", exampleMeaning: "Tôi đã mua một vé cho buổi hòa nhạc." },
+        { word: "time", ipa: "/taɪm/", type: "noun", example: "We don’t have much time left.", meaning: "Thời gian", exampleMeaning: "Chúng tôi không còn nhiều thời gian nữa." },
+        { word: "today", ipa: "/təˈdeɪ/", type: "adverb/noun", example: "What are you doing today?", meaning: "Hôm nay", exampleMeaning: "Hôm nay bạn đang làm gì?" },
+        { word: "topic", ipa: "/ˈtɒpɪk/", type: "noun", example: "The topic of the meeting is budget cuts.", meaning: "Chủ đề", exampleMeaning: "Chủ đề của cuộc họp là cắt giảm ngân sách." },
+        { word: "traffic", ipa: "/ˈtræfɪk/", type: "noun", example: "There’s heavy traffic on the highway.", meaning: "Giao thông", exampleMeaning: "Có giao thông đông đúc trên đường cao tốc." },
+        { word: "train", ipa: "/treɪn/", type: "noun/verb", example: "We took the train to the city.", meaning: "Tàu hỏa, huấn luyện", exampleMeaning: "Chúng tôi đã đi tàu hỏa đến thành phố." },
+        { word: "travel", ipa: "/ˈtrævəl/", type: "verb/noun", example: "She loves to travel abroad.", meaning: "Du lịch", exampleMeaning: "Cô ấy yêu thích du lịch nước ngoài." },
+        { word: "trip", ipa: "/trɪp/", type: "noun", example: "We’re planning a trip to the mountains.", meaning: "Chuyến đi", exampleMeaning: "Chúng tôi đang lên kế hoạch cho một chuyến đi đến núi." },
+        { word: "trouble", ipa: "/ˈtrʌbəl/", type: "noun", example: "He’s having trouble with his computer.", meaning: "Rắc rối, phiền hà", exampleMeaning: "Anh ấy đang gặp rắc rối với máy tính của mình." },
+        { word: "turn", ipa: "/tɜːrn/", type: "verb/noun", example: "Please turn off the lights.", meaning: "Xoay, quay, lượt", exampleMeaning: "Vui lòng tắt đèn đi." },
+        { word: "type", ipa: "/taɪp/", type: "noun/verb", example: "What type of car do you drive?", meaning: "Loại, gõ", exampleMeaning: "Bạn lái loại xe gì?" },
+        { word: "umbrella", ipa: "/ʌmˈbrɛlə/", type: "noun", example: "Don’t forget your umbrella; it might rain.", meaning: "Ô", exampleMeaning: "Đừng quên ô của bạn; trời có thể mưa." },
+        { word: "upgrade", ipa: "/ˈʌpɡreɪd/", type: "verb/noun", example: "They upgraded their software last month.", meaning: "Nâng cấp", exampleMeaning: "Họ đã nâng cấp phần mềm của mình vào tháng trước." },
+        { word: "vacation", ipa: "/vəˈkeɪʃən/", type: "noun", example: "We’re going on vacation next week.", meaning: "Kỳ nghỉ", exampleMeaning: "Chúng tôi sẽ đi nghỉ vào tuần tới." },
+        { word: "warm", ipa: "/wɔːrm/", type: "adjective", example: "It’s warm inside the house.", meaning: "Ấm áp", exampleMeaning: "Trong nhà rất ấm áp." },
+        { word: "way", ipa: "/weɪ/", type: "noun/adverb", example: "This is the best way to solve the problem.", meaning: "Cách, đường", exampleMeaning: "Đây là cách tốt nhất để giải quyết vấn đề." },
+        { word: "weekend", ipa: "/ˈwiːkɛnd/", type: "noun", example: "We’re going hiking this weekend.", meaning: "Cuối tuần", exampleMeaning: "Chúng tôi sẽ đi hiking vào cuối tuần này." },
+        { word: "work", ipa: "/wɜːrk/", type: "noun/verb", example: "I have a lot of work to do.", meaning: "Công việc", exampleMeaning: "Tôi có rất nhiều công việc phải làm." },
+        { word: "working", ipa: "/ˈwɜːrkɪŋ/", type: "adjective/verb", example: "The working conditions are excellent.", meaning: "Làm việc, đang làm việc", exampleMeaning: "Điều kiện làm việc rất tuyệt vời." },
+        { word: "workshop", ipa: "/ˈwɜːrkʃɒp/", type: "noun", example: "The workshop will teach basic coding skills.", meaning: "Hội thảo, xưởng", exampleMeaning: "Hội thảo sẽ dạy các kỹ năng lập trình cơ bản." },
+        { word: "you", ipa: "/juː/", type: "pronoun", example: "You can do it!", meaning: "Bạn", exampleMeaning: "Bạn có thể làm được!" },
+        { word: "construction", ipa: "/kənˈstrʌkʃən/", type: "noun", example: "The construction of the bridge took two years.", meaning: "Xây dựng", exampleMeaning: "Việc xây dựng cây cầu mất hai năm." },
+        { word: "convention", ipa: "/kənˈvɛnʃən/", type: "noun", example: "The convention attracted thousands of people.", meaning: "Hội nghị, đại hội", exampleMeaning: "Đại hội đã thu hút hàng nghìn người." },
+        { word: "copy", ipa: "/ˈkɒpi/", type: "noun/verb", example: "Can you make a copy of this document?", meaning: "Bản sao, sao chép", exampleMeaning: "Bạn có thể sao chép tài liệu này không?" },
+        { word: "correct", ipa: "/kəˈrɛkt/", type: "adjective/verb", example: "Is this answer correct?", meaning: "Đúng, sửa lại", exampleMeaning: "Câu trả lời này có đúng không?" },
+        { word: "cost", ipa: "/kɔːst/", type: "noun/verb", example: "The cost of the trip was high.", meaning: "Chi phí", exampleMeaning: "Chi phí của chuyến đi rất cao." },
+        { word: "country", ipa: "/ˈkʌntri/", type: "noun", example: "She lives in a small country town.", meaning: "Quốc gia, vùng quê", exampleMeaning: "Cô ấy sống ở một thị trấn nhỏ ở vùng quê." },
+        { word: "course", ipa: "/kɔːrs/", type: "noun", example: "I’m taking a cooking course this summer.", meaning: "Khóa học, lộ trình", exampleMeaning: "Tôi đang tham gia một khóa học nấu ăn mùa hè này." },
+        { word: "cover", ipa: "/ˈkʌvər/", type: "verb/noun", example: "The book cover is very colorful.", meaning: "Che phủ, bìa", exampleMeaning: "Bìa sách rất sặc sỡ." },
+        { word: "customer", ipa: "/ˈkʌstəmər/", type: "noun", example: "The customer complained about the service.", meaning: "Khách hàng", exampleMeaning: "Khách hàng phàn nàn về dịch vụ." },
+        { word: "date", ipa: "/deɪt/", type: "noun/verb", example: "What’s the date today?", meaning: "Ngày, hẹn hò", exampleMeaning: "Hôm nay là ngày bao nhiêu?" },
+        { word: "deadline", ipa: "/ˈdɛdlaɪn/", type: "noun", example: "The project deadline is next Friday.", meaning: "Hạn chót", exampleMeaning: "Hạn chót của dự án là thứ Sáu tới." },
+        { word: "decision", ipa: "/dɪˈsɪʒən/", type: "noun", example: "We made a decision to move forward.", meaning: "Quyết định", exampleMeaning: "Chúng tôi đã đưa ra quyết định tiến lên." },
+        { word: "decrease", ipa: "/dɪˈkriːs/", type: "verb/noun", example: "The temperature will decrease later.", meaning: "Giảm, sự giảm", exampleMeaning: "Nhiệt độ sẽ giảm vào sau này." },
+        { word: "deliver", ipa: "/dɪˈlɪvər/", type: "verb", example: "The package was delivered yesterday.", meaning: "Giao hàng", exampleMeaning: "Gói hàng đã được giao hôm qua." },
+        { word: "demand", ipa: "/dɪˈmænd/", type: "noun/verb", example: "There is a high demand for electric cars.", meaning: "Nhu cầu, đòi hỏi", exampleMeaning: "Có nhu cầu lớn về xe điện." },
+        { word: "department", ipa: "/dɪˈpɑːrtmənt/", type: "noun", example: "She works in the marketing department.", meaning: "Bộ phận, phòng ban", exampleMeaning: "Cô ấy làm việc ở bộ phận tiếp thị." },
+        { word: "destination", ipa: "/ˌdɛstɪˈneɪʃən/", type: "noun", example: "Paris is our destination for the trip.", meaning: "Điểm đến", exampleMeaning: "Paris là điểm đến của chuyến đi của chúng tôi." },
+        { word: "develop", ipa: "/dɪˈvɛləp/", type: "verb", example: "The company is developing a new product.", meaning: "Phát triển", exampleMeaning: "Công ty đang phát triển một sản phẩm mới." },
+        { word: "direct", ipa: "/dɪˈrɛkt/", type: "adjective/verb", example: "He gave me direct instructions.", meaning: "Trực tiếp, chỉ đạo", exampleMeaning: "Anh ấy đã đưa cho tôi các hướng dẫn trực tiếp." },
+        { word: "discussion", ipa: "/dɪˈskʌʃən/", type: "noun", example: "We had a long discussion about the project.", meaning: "Thảo luận", exampleMeaning: "Chúng tôi đã có một cuộc thảo luận dài về dự án." },
+        { word: "distribute", ipa: "/dɪˈstrɪbjuːt/", type: "verb", example: "They distributed flyers in the neighborhood.", meaning: "Phân phối, phát", exampleMeaning: "Họ đã phát tờ rơi trong khu dân cư." },
+        { word: "do", ipa: "/duː/", type: "verb", example: "I need to do my homework.", meaning: "Làm", exampleMeaning: "Tôi cần làm bài tập về nhà." },
+        { word: "document", ipa: "/ˈdɒkjumənt/", type: "noun", example: "Please bring the document to the meeting.", meaning: "Tài liệu", exampleMeaning: "Vui lòng mang tài liệu đến cuộc họp." },
+        { word: "done", ipa: "/dʌn/", type: "verb", example: "The work is done.", meaning: "Hoàn thành", exampleMeaning: "Công việc đã hoàn thành." },
+        { word: "don’t", ipa: "/doʊnt/", type: "contraction", example: "Don’t forget to call me.", meaning: "Đừng", exampleMeaning: "Đừng quên gọi cho tôi." },
+        { word: "drive", ipa: "/draɪv/", type: "verb/noun", example: "He likes to drive fast cars.", meaning: "Lái xe, sự thúc đẩy", exampleMeaning: "Anh ấy thích lái xe hơi nhanh." },
+        { word: "due", ipa: "/duː/", type: "adjective", example: "The payment is due tomorrow.", meaning: "Đến hạn", exampleMeaning: "Thanh toán đến hạn vào ngày mai." },
+        { word: "each other", ipa: "/iːtʃ ˈʌðər/", type: "pronoun", example: "They help each other with their work.", meaning: "Nhau", exampleMeaning: "Họ giúp đỡ lẫn nhau trong công việc." },
+        { word: "early", ipa: "/ˈɜːrli/", type: "adverb/adjective", example: "We arrived early for the movie.", meaning: "Sớm", exampleMeaning: "Chúng tôi đến sớm cho buổi chiếu phim." },
+        { word: "edit", ipa: "/ˈɛdɪt/", type: "verb", example: "She edited the article before publishing.", meaning: "Sửa đổi, biên tập", exampleMeaning: "Cô ấy đã chỉnh sửa bài viết trước khi xuất bản." },
+        { word: "efficient", ipa: "/ɪˈfɪʃənt/", type: "adjective", example: "The new system is very efficient.", meaning: "Hiệu quả", exampleMeaning: "Hệ thống mới rất hiệu quả." },
+        { word: "email", ipa: "/ˈiːmeɪl/", type: "noun/verb", example: "I sent you an email yesterday.", meaning: "Email", exampleMeaning: "Tôi đã gửi cho bạn một email hôm qua." },
+        { word: "engine", ipa: "/ˈɛndʒɪn/", type: "noun", example: "The engine of the car needs repair.", meaning: "Động cơ", exampleMeaning: "Động cơ của xe cần được sửa chữa." },
+        { word: "estimated", ipa: "/ˈɛstɪmeɪtɪd/", type: "adjective", example: "The estimated cost is $500.", meaning: "Ước tính", exampleMeaning: "Chi phí ước tính là 500 đô la." },
+        { word: "exhibition", ipa: "/ˌɛksɪˈbɪʃən/", type: "noun", example: "The art exhibition attracted many visitors.", meaning: "Triển lãm", exampleMeaning: "Triển lãm nghệ thuật đã thu hút nhiều khách tham quan." },
+        { word: "expand", ipa: "/ɪkˈspænd/", type: "verb", example: "The company plans to expand overseas.", meaning: "Mở rộng", exampleMeaning: "Công ty dự định mở rộng ra nước ngoài." },
+        { word: "extend", ipa: "/ɪkˈstɛnd/", type: "verb", example: "They extended the deadline by one week.", meaning: "Kéo dài", exampleMeaning: "Họ đã kéo dài hạn chót thêm một tuần." },
+        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
+        { word: "fan", ipa: "/fæn/", type: "noun", example: "The fan keeps the room cool.", meaning: "Quạt, người hâm mộ", exampleMeaning: "Cái quạt giữ cho phòng mát mẻ." },
+        { word: "fax", ipa: "/fæks/", type: "noun/verb", example: "Please fax the document to the office.", meaning: "Fax, gửi fax", exampleMeaning: "Vui lòng fax tài liệu đến văn phòng." },
+        { word: "fill", ipa: "/fɪl/", type: "verb", example: "Can you fill this form out?", meaning: "Điền, lấp đầy", exampleMeaning: "Bạn có thể điền vào mẫu này không?" },
+        { word: "finding", ipa: "/ˈfaɪndɪŋ/", type: "noun", example: "The finding surprised the researchers.", meaning: "Sự khám phá, phát hiện", exampleMeaning: "Phát hiện đã làm ngạc nhiên các nhà nghiên cứu." },
+        { word: "finished", ipa: "/ˈfɪnɪʃt/", type: "adjective", example: "The project is finished on time.", meaning: "Hoàn thành", exampleMeaning: "Dự án đã hoàn thành đúng hạn." },
+        { word: "fix", ipa: "/fɪks/", type: "verb", example: "He fixed the broken chair.", meaning: "Sửa chữa", exampleMeaning: "Anh ấy đã sửa chiếc ghế bị hỏng." },
+        { word: "flight", ipa: "/flaɪt/", type: "noun", example: "Our flight leaves at 8 AM.", meaning: "Chuyến bay", exampleMeaning: "Chuyến bay của chúng tôi cất cánh lúc 8 giờ sáng." },
+        { word: "follow", ipa: "/ˈfɒloʊ/", type: "verb", example: "Please follow the instructions carefully.", meaning: "Theo sau, làm theo", exampleMeaning: "Vui lòng làm theo hướng dẫn cẩn thận." },
+        { word: "forecast", ipa: "/ˈfɔːrkæst/", type: "noun/verb", example: "The weather forecast predicts rain.", meaning: "Dự báo", exampleMeaning: "Dự báo thời tiết dự đoán có mưa." },
+        { word: "form", ipa: "/fɔːrm/", type: "noun/verb", example: "Fill out this form to apply.", meaning: "Biểu mẫu, hình dạng", exampleMeaning: "Điền vào biểu mẫu này để nộp đơn." },
+        { word: "free", ipa: "/friː/", type: "adjective", example: "This service is free of charge.", meaning: "Miễn phí, tự do", exampleMeaning: "Dịch vụ này miễn phí." },
+        { word: "friday", ipa: "/ˈfraɪdeɪ/", type: "noun", example: "The meeting is scheduled for Friday.", meaning: "Thứ Sáu", exampleMeaning: "Cuộc họp được lên lịch vào Thứ Sáu." },
+        { word: "get", ipa: "/ɡɛt/", type: "verb", example: "I need to get some groceries.", meaning: "Lấy, nhận", exampleMeaning: "Tôi cần đi lấy một số thực phẩm." },
+        { word: "go", ipa: "/ɡoʊ/", type: "verb", example: "Let’s go to the park.", meaning: "Đi", exampleMeaning: "Hãy đi công viên." },
+        { word: "gone", ipa: "/ɡɒn/", type: "verb", example: "She has gone to the store.", meaning: "Đã đi", exampleMeaning: "Cô ấy đã đi đến cửa hàng." },
+        { word: "guideline", ipa: "/ˈɡaɪdlaɪn/", type: "noun", example: "Follow the guidelines for safety.", meaning: "Hướng dẫn", exampleMeaning: "Tuân theo hướng dẫn để đảm bảo an toàn." },
+        { word: "hair cut", ipa: "/hɛr kʌt/", type: "noun", example: "I need a haircut before the party.", meaning: "Cắt tóc", exampleMeaning: "Tôi cần cắt tóc trước bữa tiệc." },
+        { word: "hanging", ipa: "/ˈhæŋɪŋ/", type: "verb/adjective", example: "The picture is hanging on the wall.", meaning: "Treo, đang treo", exampleMeaning: "Bức tranh đang treo trên tường." },
+        { word: "hard", ipa: "/hɑːrd/", type: "adjective", example: "This test is very hard.", meaning: "Khó, cứng", exampleMeaning: "Bài kiểm tra này rất khó." },
+        { word: "held", ipa: "/hɛld/", type: "verb", example: "The event was held last weekend.", meaning: "Được tổ chức", exampleMeaning: "Sự kiện đã được tổ chức cuối tuần trước." },
+        { word: "help", ipa: "/hɛlp/", type: "verb/noun", example: "Can you help me with this task?", meaning: "Giúp đỡ", exampleMeaning: "Bạn có thể giúp tôi với công việc này không?" },
+        { word: "helpful", ipa: "/ˈhɛlpfəl/", type: "adjective", example: "Her advice was very helpful.", meaning: "Hữu ích", exampleMeaning: "Lời khuyên của cô ấy rất hữu ích." },
+        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
+        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
+        { word: "hope", ipa: "/hoʊp/", type: "verb/noun", example: "I hope it doesn’t rain today.", meaning: "Hy vọng", exampleMeaning: "Tôi hy vọng hôm nay không mưa." },
+        { word: "hot", ipa: "/hɒt/", type: "adjective", example: "It’s very hot outside.", meaning: "Nóng", exampleMeaning: "Bên ngoài rất nóng." },
+        { word: "idea", ipa: "/aɪˈdiːə/", type: "noun", example: "She had a great idea for the project.", meaning: "Ý tưởng", exampleMeaning: "Cô ấy có một ý tưởng tuyệt vời cho dự án." },
+        { word: "if", ipa: "/ɪf/", type: "conjunction", example: "I’ll go if it doesn’t rain.", meaning: "Nếu", exampleMeaning: "Tôi sẽ đi nếu trời không mưa." },
+        { word: "in time", ipa: "/ɪn taɪm/", type: "adverb", example: "We arrived in time for the movie.", meaning: "Đúng giờ", exampleMeaning: "Chúng tôi đến đúng giờ cho buổi chiếu phim." },
+        { word: "in-charge", ipa: "/ɪn tʃɑːrdʒ/", type: "noun/adjective", example: "She is in charge of the project.", meaning: "Phụ trách", exampleMeaning: "Cô ấy phụ trách dự án." },
+        { word: "indoor", ipa: "/ˈɪndɔːr/", type: "adjective", example: "The event will be held indoor due to rain.", meaning: "Trong nhà", exampleMeaning: "Sự kiện sẽ được tổ chức trong nhà do trời mưa." },
+        { word: "informative", ipa: "/ɪnˈfɔːrmətɪv/", type: "adjective", example: "The presentation was very informative.", meaning: "Hữu ích, cung cấp thông tin", exampleMeaning: "Bài thuyết trình rất hữu ích." },
+        { word: "ink", ipa: "/ɪŋk/", type: "noun", example: "The pen ran out of ink.", meaning: "Mực", exampleMeaning: "Cây bút hết mực rồi." },
+        { word: "instruction", ipa: "/ɪnˈstrʌkʃən/", type: "noun", example: "Follow the instructions carefully.", meaning: "Hướng dẫn", exampleMeaning: "Làm theo hướng dẫn cẩn thận." }
+    ];
+
+    let currentIndex = 0;
+    let isEditing = false;
+    let isShuffled = false;
+
+    function updateCardInfo() {
+        const totalWords = vocabulary.length;
+        const currentPosition = currentIndex + 1;
+        document.getElementById("cardInfo").innerHTML = `Word ${currentPosition} of ${totalWords}`;
+    }
+
+    function updateCard() {
+        const front = document.getElementById("cardFront");
+        const back = document.getElementById("cardBack");
+        const card = document.getElementById("flashcard");
+
+        const { word, ipa, type, example, meaning, exampleMeaning } = vocabulary[currentIndex];
+
+        front.innerHTML = `<strong>${word}</strong><br>${ipa}<br>(${type})<br>${example}`;
+        back.innerHTML = `<strong>${meaning}</strong><br>${exampleMeaning}`;
+        card.classList.remove("flipped");
+        updateCardInfo();
+    }
+
+    function nextCard() {
+        currentIndex = (currentIndex + 1) % vocabulary.length;
+        updateCard();
+    }
+
+    function prevCard() {
+        currentIndex = (currentIndex - 1 + vocabulary.length) % vocabulary.length;
+        updateCard();
+    }
+
+    function toggleShuffle() {
+        const shuffleButton = document.getElementById("shuffleButton");
+        isShuffled = !isShuffled;
+
+        if (isShuffled) {
+            vocabulary = vocabulary.sort(() => Math.random() - 0.5);
+            shuffleButton.classList.add("active");
+        } else {
+            vocabulary = vocabulary.sort((a, b) => a.word.localeCompare(b.word));
+            shuffleButton.classList.remove("active");
+        }
+        currentIndex = 0;
+        updateCard();
+    }
+
+    document.getElementById("flashcard").addEventListener("click", function() {
+        this.classList.toggle("flipped");
+    });
+
+    function showAddWordModal() {
+        isEditing = false;
+        document.getElementById("modalTitle").textContent = "Add New Word";
+        document.getElementById("saveButton").onclick = addNewWord;
+        clearModalFields();
+        document.getElementById("newIPA").disabled = true;
+        document.getElementById("newType").disabled = true;
+        document.getElementById("newMeaning").disabled = true;
+        document.getElementById("newExample").disabled = true;
+        document.getElementById("newExampleMeaning").disabled = true;
+        document.getElementById("saveButton").disabled = true;
+        document.getElementById("addWordModal").style.display = "block";
+        document.getElementById("wordError").style.display = "none";
+        document.getElementById("fieldsError").style.display = "none";
+    }
+
+    function showEditWordModal(index = currentIndex) {
+        isEditing = true;
+        document.getElementById("modalTitle").textContent = "Edit Word";
+        document.getElementById("saveButton").onclick = updateCurrentWord;
+
+        const { word, ipa, type, example, meaning, exampleMeaning } = vocabulary[index];
+        document.getElementById("newWord").value = word;
+        document.getElementById("newIPA").value = ipa;
+        document.getElementById("newType").value = type;
+        document.getElementById("newExample").value = example;
+        document.getElementById("newMeaning").value = meaning;
+        document.getElementById("newExampleMeaning").value = exampleMeaning;
+
+        document.getElementById("newIPA").disabled = false;
+        document.getElementById("newType").disabled = false;
+        document.getElementById("newMeaning").disabled = false;
+        document.getElementById("newExample").disabled = false;
+        document.getElementById("newExampleMeaning").disabled = false;
+        document.getElementById("saveButton").disabled = false;
+        document.getElementById("addWordModal").style.display = "block";
+        checkWordExistence(word, index); // Pass the index to avoid self-duplicate check
+        document.getElementById("fieldsError").style.display = "none";
+    }
+
+    function deleteCurrentWord() {
+        if (vocabulary.length === 0) {
+            alert("No words to delete!");
+            return;
+        }
+        if (confirm("Are you sure you want to delete this word?")) {
+            vocabulary.splice(currentIndex, 1);
+            if (vocabulary.length === 0) {
+                currentIndex = 0;
+            } else {
+                currentIndex = Math.min(currentIndex, vocabulary.length - 1);
+            }
+            updateCard();
+        }
+    }
+
+    function clearModalFields() {
+        document.getElementById("newWord").value = "";
+        document.getElementById("newIPA").value = "";
+        document.getElementById("newType").value = "";
+        document.getElementById("newExample").value = "";
+        document.getElementById("newMeaning").value = "";
+        document.getElementById("newExampleMeaning").value = "";
+    }
+
+    function closeAddWordModal() {
+        document.getElementById("addWordModal").style.display = "none";
+        clearModalFields();
+        document.getElementById("wordError").style.display = "none";
+        document.getElementById("fieldsError").style.display = "none";
+    }
+
+    function checkWordExistence(word, editIndex = null) {
+        const wordInput = word.toLowerCase();
+        const wordError = document.getElementById("wordError");
+        const exists = vocabulary.some((item, index) => 
+            item.word.toLowerCase() === wordInput && (editIndex === null || index !== editIndex)
+        );
+        wordError.style.display = exists ? "block" : "none";
+
+        if (!isEditing) {
+            const isValid = wordInput && !exists;
+            document.getElementById("newIPA").disabled = !isValid;
+            document.getElementById("newType").disabled = !isValid;
+            document.getElementById("newMeaning").disabled = !isValid;
+            document.getElementById("newExample").disabled = !isValid;
+            document.getElementById("newExampleMeaning").disabled = !isValid;
+            document.getElementById("saveButton").disabled = !isValid;
+        }
+    }
+
+    document.getElementById("newWord").addEventListener("input", function() {
+        checkWordExistence(this.value, isEditing ? currentIndex : null);
+    });
+
+    function addNewWord() {
+        const newWord = document.getElementById("newWord").value.toLowerCase();
+        const newIPA = document.getElementById("newIPA").value;
+        const newType = document.getElementById("newType").value.toLowerCase();
+        const newExample = document.getElementById("newExample").value;
+        const newMeaning = document.getElementById("newMeaning").value.toLowerCase();
+        const newExampleMeaning = document.getElementById("newExampleMeaning").value;
+
+        if (!newWord || !newIPA || !newType || !newExample || !newMeaning || !newExampleMeaning) {
+            document.getElementById("fieldsError").style.display = "block";
+            return;
+        }
+
+        const wordExists = vocabulary.some(item => item.word.toLowerCase() === newWord);
+        if (wordExists) {
+            document.getElementById("wordError").style.display = "block";
+            return;
+        }
+
+        vocabulary.push({ word: newWord, ipa: newIPA, type: newType, example: newExample, meaning: newMeaning, exampleMeaning: newExampleMeaning });
+        closeAddWordModal();
+        updateCard();
+    }
+
+    function updateCurrentWord() {
+        const newWord = document.getElementById("newWord").value.toLowerCase();
+        const newIPA = document.getElementById("newIPA").value;
+        const newType = document.getElementById("newType").value.toLowerCase();
+        const newExample = document.getElementById("newExample").value;
+        const newMeaning = document.getElementById("newMeaning").value.toLowerCase();
+        const newExampleMeaning = document.getElementById("newExampleMeaning").value;
+
+        if (!newWord || !newIPA || !newType || !newExample || !newMeaning || !newExampleMeaning) {
+            document.getElementById("fieldsError").style.display = "block";
+            return;
+        }
+
+        const wordExists = vocabulary.some((item, index) => 
+            item.word.toLowerCase() === newWord && index !== currentIndex
+        );
+        if (wordExists) {
+            document.getElementById("wordError").style.display = "block";
+            return;
+        }
+
+        vocabulary[currentIndex] = { 
+            word: newWord, 
+            ipa: newIPA, 
+            type: newType, 
+            example: newExample, 
+            meaning: newMeaning, 
+            exampleMeaning: newExampleMeaning 
+        };
+        closeAddWordModal();
+        updateCard();
+    }
+
+    function showViewWordsModal() {
+        const modal = document.getElementById("viewWordsModal");
+        const wordList = document.getElementById("wordList");
+        wordList.innerHTML = "";
+        vocabulary.forEach((item, index) => renderWordItem(item, index));
+        document.getElementById("searchWords").value = "";
+        modal.style.display = "block";
+    }
+
+    function closeViewWordsModal() {
+        document.getElementById("viewWordsModal").style.display = "none";
+    }
+
+    function renderWordItem(item, index) {
+        const wordList = document.getElementById("wordList");
+        const div = document.createElement("div");
+        div.className = "word-item";
+        div.innerHTML = `
+            <div>${item.word}</div>
+            <div class="word-item-buttons">
+                <button onclick="openInFlashcard(${index})">Open in Flashcard</button>
+                <button onclick="showEditWordModal(${index}); closeViewWordsModal()">Edit</button>
+                <button onclick="deleteWord(${index}); closeViewWordsModal()" class="delete-btn">Delete</button>
+            </div>
+        `;
+        wordList.appendChild(div);
+    }
+
+    function openInFlashcard(index) {
+        currentIndex = index;
+        updateCard();
+        closeViewWordsModal();
+    }
+
+    function deleteWord(index) {
+        if (confirm("Are you sure you want to delete this word?")) {
+            vocabulary.splice(index, 1);
+            if (vocabulary.length === 0) {
+                currentIndex = 0;
+            } else {
+                currentIndex = Math.min(currentIndex, vocabulary.length - 1);
+            }
+            updateCard();
+        }
+    }
+
+    document.getElementById("searchWords").addEventListener("input", function() {
+        const searchTerm = this.value.toLowerCase();
+        const wordList = document.getElementById("wordList");
+        wordList.innerHTML = "";
+        vocabulary
+            .filter(item => item.word.toLowerCase().includes(searchTerm))
+            .forEach((item, index) => renderWordItem(item, vocabulary.indexOf(item)));
+    });
+
+    // Initial card load (sorted alphabetically by default)
+    vocabulary.sort((a, b) => a.word.localeCompare(b.word));
+    updateCard();
+</script>
+
+</body>
+</html>
