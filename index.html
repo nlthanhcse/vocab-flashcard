@@ -168,6 +168,43 @@
         .view-btn { background: #3498db; color: #ffffff; }
         .view-btn:hover { background: #2980b9; }
 
+        /* Dropdown Styling */
+        select {
+            text-align: center;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            background: #3498db;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
+        select:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        select:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+        }
+
         /* Modal Styling */
         #addWordModal, #viewWordsModal {
             display: none;
@@ -369,6 +406,7 @@
             .button-group { flex-direction: column; width: 100%; }
             .button-separator { display: none; }
             button { font-size: 0.9rem; padding: 0.65rem 1.25rem; min-width: 100px; }
+            select { font-size: 0.9rem; padding: 0.65rem 1.25rem; min-width: 140px; }
             #addWordModal, #viewWordsModal { padding: 1.25rem; width: 85%; max-width: 450px; }
             #viewWordsModal { max-width: 550px; }
             #addWordModal h3, #viewWordsModal h3 { font-size: 1.5rem; margin-bottom: 1.25rem; }
@@ -389,6 +427,7 @@
             .button-group { flex-direction: column; width: 100%; }
             .button-separator { display: none; }
             button { font-size: 0.8rem; padding: 0.5rem 1rem; min-width: 100%; width: 100%; }
+            select { width: 100%; font-size: 0.8rem; padding: 0.5rem 1rem; min-width: 100%; }
             #addWordModal, #viewWordsModal { width: 95%; padding: 1rem; max-width: none; }
             #addWordModal h3, #viewWordsModal h3 { font-size: 1.25rem; margin-bottom: 1rem; }
             #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 0.8rem; }
@@ -425,6 +464,10 @@
     </div>
     <div class="button-group">
         <button class="shuffle-btn" id="shuffleButton" onclick="toggleShuffle()">Shuffle</button>
+        <select id="vocabSelect" onchange="changeVocabList()">
+            <option value="listening" selected>Vocab for Listening</option>
+            <option value="reading">Vocab for Reading</option>
+        </select>
         <button class="view-btn" onclick="showViewWordsModal()">View All Words</button>
     </div>
 </div>
@@ -461,8 +504,8 @@
 </div>
 
 <script>
-    let vocabulary = [
-        { word: "ability", ipa: "/əˈbɪləti/", type: "noun", example: "She has the ability to solve complex problems.", meaning: "Khả năng", exampleMeaning: "Cô ấy có khả năng giải quyết các vấn đề phức tạp." },
+    let vocabForListening = [
+    { word: "ability", ipa: "/əˈbɪləti/", type: "noun", example: "She has the ability to solve complex problems.", meaning: "Khả năng", exampleMeaning: "Cô ấy có khả năng giải quyết các vấn đề phức tạp." },
         { word: "belongings", ipa: "/bɪˈlɒŋɪŋz/", type: "noun", example: "He packed all his belongings in a suitcase.", meaning: "Tài sản, đồ dùng cá nhân", exampleMeaning: "Anh ấy đóng gói tất cả tài sản của mình vào một chiếc vali." },
         { word: "calendar", ipa: "/ˈkælɪndər/", type: "noun", example: "She marked the meeting date on her calendar.", meaning: "Lịch", exampleMeaning: "Cô ấy đánh dấu ngày họp trên lịch của mình." },
         { word: "can", ipa: "/kæn/", type: "verb", example: "She can play the piano very well.", meaning: "Có thể", exampleMeaning: "Cô ấy có thể chơi piano rất giỏi." },
@@ -569,6 +612,7 @@
         { word: "exhibition", ipa: "/ˌɛksɪˈbɪʃən/", type: "noun", example: "The art exhibition attracted many visitors.", meaning: "Triển lãm", exampleMeaning: "Triển lãm nghệ thuật đã thu hút nhiều khách tham quan." },
         { word: "expand", ipa: "/ɪkˈspænd/", type: "verb", example: "The company plans to expand overseas.", meaning: "Mở rộng", exampleMeaning: "Công ty dự định mở rộng ra nước ngoài." },
         { word: "extend", ipa: "/ɪkˈstɛnd/", type: "verb", example: "They extended the deadline by one week.", meaning: "Kéo dài", exampleMeaning: "Họ đã kéo dài hạn chót thêm một tuần." },
+        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
         { word: "fan", ipa: "/fæn/", type: "noun", example: "The fan keeps the room cool.", meaning: "Quạt, người hâm mộ", exampleMeaning: "Cái quạt giữ cho phòng mát mẻ." },
         { word: "fax", ipa: "/fæks/", type: "noun/verb", example: "Please fax the document to the office.", meaning: "Fax, gửi fax", exampleMeaning: "Vui lòng fax tài liệu đến văn phòng." },
         { word: "fill", ipa: "/fɪl/", type: "verb", example: "Can you fill this form out?", meaning: "Điền, lấp đầy", exampleMeaning: "Bạn có thể điền vào mẫu này không?" },
@@ -591,6 +635,8 @@
         { word: "held", ipa: "/hɛld/", type: "verb", example: "The event was held last weekend.", meaning: "Được tổ chức", exampleMeaning: "Sự kiện đã được tổ chức cuối tuần trước." },
         { word: "help", ipa: "/hɛlp/", type: "verb/noun", example: "Can you help me with this task?", meaning: "Giúp đỡ", exampleMeaning: "Bạn có thể giúp tôi với công việc này không?" },
         { word: "helpful", ipa: "/ˈhɛlpfəl/", type: "adjective", example: "Her advice was very helpful.", meaning: "Hữu ích", exampleMeaning: "Lời khuyên của cô ấy rất hữu ích." },
+        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
+        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
         { word: "hope", ipa: "/hoʊp/", type: "verb/noun", example: "I hope it doesn’t rain today.", meaning: "Hy vọng", exampleMeaning: "Tôi hy vọng hôm nay không mưa." },
         { word: "hot", ipa: "/hɒt/", type: "adjective", example: "It’s very hot outside.", meaning: "Nóng", exampleMeaning: "Bên ngoài rất nóng." },
         { word: "idea", ipa: "/aɪˈdiːə/", type: "noun", example: "She had a great idea for the project.", meaning: "Ý tưởng", exampleMeaning: "Cô ấy có một ý tưởng tuyệt vời cho dự án." },
@@ -658,77 +704,78 @@
         { word: "working", ipa: "/ˈwɜːrkɪŋ/", type: "adjective/verb", example: "The working conditions are excellent.", meaning: "Làm việc, đang làm việc", exampleMeaning: "Điều kiện làm việc rất tuyệt vời." },
         { word: "workshop", ipa: "/ˈwɜːrkʃɒp/", type: "noun", example: "The workshop will teach basic coding skills.", meaning: "Hội thảo, xưởng", exampleMeaning: "Hội thảo sẽ dạy các kỹ năng lập trình cơ bản." },
         { word: "you", ipa: "/juː/", type: "pronoun", example: "You can do it!", meaning: "Bạn", exampleMeaning: "Bạn có thể làm được!" },
-        { word: "advancement", ipa: "/ədˈvænsmənt/", type: "noun", example: "The company is focused on the advancement of technology.", meaning: "sự tiến bộ", exampleMeaning: "Công ty đang tập trung vào sự tiến bộ của công nghệ." },
-        { word: "position", ipa: "/pəˈzɪʃn̩/", type: "noun", example: "He holds a senior position in the company.", meaning: "vị trí", exampleMeaning: "Anh ấy giữ một vị trí cao cấp trong công ty." },
-        { word: "encourage", ipa: "/ɪnˈkʌrɪdʒ/", type: "verb", example: "The teacher encouraged the students to ask questions.", meaning: "khuyến khích", exampleMeaning: "Giáo viên khuyến khích học sinh đặt câu hỏi." },
-        { word: "notify", ipa: "/ˈnoʊtɪfaɪ/", type: "verb", example: "Please notify me of any changes.", meaning: "thông báo", exampleMeaning: "Xin vui lòng thông báo cho tôi biết bất kỳ sự thay đổi nào." },
-        { word: "discriminate", ipa: "/dɪsˈkrɪmɪneɪt/", type: "verb", example: "The law prohibits employers from discriminating against employees based on age.", meaning: "phân biệt đối xử", exampleMeaning: "Luật pháp cấm các nhà tuyển dụng phân biệt đối xử với nhân viên dựa trên tuổi tác." },
-        { word: "against", ipa: "/əˈɡɛnst/", type: "preposition", example: "She leaned against the wall.", meaning: "chống lại", exampleMeaning: "Cô ấy tựa vào tường." },
-        { word: "anyone else", ipa: "/ˈeniˌwʌn ˈɛls/", type: "phrase", example: "Is anyone else coming to the party?", meaning: "bất kỳ ai khác", exampleMeaning: "Có ai khác đến buổi tiệc không?" },
-        { word: "have been", ipa: "/hæv bɪn/", type: "phrase", example: "They have been working here for years.", meaning: "đã từng ở", exampleMeaning: "Họ đã làm việc ở đây nhiều năm rồi." },
-        { word: "had been", ipa: "/hæd bɪn/", type: "phrase", example: "She had been to Paris before the trip.", meaning: "đã từng ở", exampleMeaning: "Cô ấy đã từng đến Paris trước chuyến đi." },
-        { word: "installing", ipa: "/ɪnˈstɔːlɪŋ/", type: "verb", example: "They are installing new software on the computers.", meaning: "lắp đặt", exampleMeaning: "Họ đang cài đặt phần mềm mới trên máy tính." },
-        { word: "operate", ipa: "/ˈɒpəreɪt/", type: "verb", example: "The surgeon will operate on the patient tomorrow.", meaning: "hoạt động", exampleMeaning: "Bác sĩ phẫu thuật sẽ phẫu thuật cho bệnh nhân vào ngày mai." },
-        { word: "allow", ipa: "/əˈlaʊ/", type: "verb", example: "The rules allow students to leave early.", meaning: "cho phép", exampleMeaning: "Quy định cho phép học sinh ra sớm." },
-        { word: "remind", ipa: "/rɪˈmaɪnd/", type: "verb", example: "Please remind me to call her later.", meaning: "nhắc nhở", exampleMeaning: "Vui lòng nhắc tôi gọi cho cô ấy sau." },
-        { word: "important", ipa: "/ɪmˈpɔːrtnt/", type: "adjective", example: "It is important to finish the project on time.", meaning: "quan trọng", exampleMeaning: "Việc hoàn thành dự án đúng hạn là quan trọng." },
-        { word: "individual", ipa: "/ˌɪndɪˈvɪdʒuəl/", type: "adjective", example: "Each individual has unique talents.", meaning: "cá nhân", exampleMeaning: "Mỗi cá nhân có những tài năng riêng biệt." },
-        { word: "extensively", ipa: "/ɪkˈstɛnsɪvli/", type: "adverb", example: "The topic was discussed extensively in the meeting.", meaning: "rộng rãi", exampleMeaning: "Chủ đề đã được thảo luận rộng rãi trong cuộc họp." },
-        { word: "housing", ipa: "/ˈhaʊzɪŋ/", type: "noun", example: "The government is investing in affordable housing.", meaning: "nhà ở", exampleMeaning: "Chính phủ đang đầu tư vào nhà ở giá rẻ." },
-        { word: "honor", ipa: "/ˈɒnər/", type: "noun", example: "She received an honor for her contributions.", meaning: "danh dự", exampleMeaning: "Cô ấy nhận được một danh dự cho những đóng góp của mình." },
-        { word: "librarian", ipa: "/laɪˈbrɛəriən/", type: "noun", example: "The librarian helped me find the book.", meaning: "thủ thư", exampleMeaning: "Thủ thư đã giúp tôi tìm cuốn sách." },
-        { word: "unfamiliar", ipa: "/ˌʌnfəˈmɪliər/", type: "adjective", example: "The language was unfamiliar to him.", meaning: "không quen thuộc", exampleMeaning: "Ngôn ngữ đó không quen thuộc với anh ấy." },
-        { word: "electronic", ipa: "/ɪˌlɛkˈtrɒnɪk/", type: "adjective", example: "She works with electronic devices daily.", meaning: "điện tử", exampleMeaning: "Cô ấy làm việc với các thiết bị điện tử hàng ngày." },
-        { word: "questionnaires", ipa: "/ˌkwɛstʃəˈnɛərz/", type: "noun", example: "We distributed questionnaires to gather feedback.", meaning: "bảng câu hỏi", exampleMeaning: "Chúng tôi phát bảng câu hỏi để thu thập phản hồi." },
-        { word: "answer", ipa: "/ˈænsər/", type: "noun", example: "His answer to the question was clear.", meaning: "câu trả lời", exampleMeaning: "Câu trả lời của anh ấy cho câu hỏi rất rõ ràng." },
-        { word: "reference", ipa: "/ˈrɛfərəns/", type: "noun", example: "She provided a reference for the job application.", meaning: "tài liệu tham khảo", exampleMeaning: "Cô ấy cung cấp một tài liệu tham khảo cho đơn xin việc." },
-        { word: "considered", ipa: "/kənˈsɪdərd/", type: "verb", example: "They considered all options before deciding.", meaning: "xem xét", exampleMeaning: "Họ đã xem xét tất cả các lựa chọn trước khi quyết định." },
-        { word: "productivity", ipa: "/ˌprɒdʌkˈtɪvɪti/", type: "noun", example: "The new system increased productivity at work.", meaning: "năng suất", exampleMeaning: "Hệ thống mới đã tăng năng suất làm việc." },
-        { word: "decided", ipa: "/dɪˈsaɪdɪd/", type: "adjective", example: "She was very decided about her career choice.", meaning: "quyết định", exampleMeaning: "Cô ấy rất quyết định về lựa chọn sự nghiệp của mình." },
-        { word: "implement", ipa: "/ˈɪmplɪment/", type: "verb", example: "The team will implement the new strategy next month.", meaning: "thực hiện", exampleMeaning: "Đội ngũ sẽ thực hiện chiến lược mới vào tháng tới." },
-        { word: "manufacturing", ipa: "/ˌmænjʊˈfæktʃərɪŋ/", type: "noun", example: "Manufacturing cars requires advanced technology.", meaning: "sản xuất", exampleMeaning: "Sản xuất ô tô đòi hỏi công nghệ tiên tiến." },
-        { word: "process", ipa: "/ˈprəʊsɛs/", type: "noun", example: "The process of learning takes time.", meaning: "quá trình", exampleMeaning: "Quá trình học tập mất thời gian." },
-        { word: "economic studies", ipa: "/ˌiːkəˈnɒmɪk ˈstʌdiz/", type: "phrase", example: "He is pursuing economic studies at university.", meaning: "nghiên cứu kinh tế", exampleMeaning: "Anh ấy đang theo đuổi nghiên cứu kinh tế tại đại học." },
-        { word: "predicted", ipa: "/prɪˈdɪktɪd/", type: "verb", example: "The weather forecast predicted rain for tomorrow.", meaning: "dự đoán", exampleMeaning: "Dự báo thời tiết dự đoán mưa cho ngày mai." },
-        { word: "robust", ipa: "/rəʊˈbʌst/", type: "adjective", example: "The system is robust enough to handle large data.", meaning: "mạnh mẽ", exampleMeaning: "Hệ thống đủ mạnh mẽ để xử lý dữ liệu lớn." },
-        { word: "environmentally-friendly", ipa: "/ɪnˌvaɪrənˈmɛntəli ˈfrɛndli/", type: "adjective", example: "They use environmentally-friendly products.", meaning: "thân thiện với môi trường", exampleMeaning: "Họ sử dụng các sản phẩm thân thiện với môi trường." },
-        { word: "inspect", ipa: "/ɪnˈspɛkt/", type: "verb", example: "The manager will inspect the factory tomorrow.", meaning: "kiểm tra", exampleMeaning: "Quản lý sẽ kiểm tra nhà máy vào ngày mai." },
-        { word: "explain", ipa: "/ɪkˈspleɪn/", type: "verb", example: "Can you explain the rules to me?", meaning: "giải thích", exampleMeaning: "Bạn có thể giải thích các quy tắc cho tôi không?" },
-        { word: "additional", ipa: "/əˈdɪʃənl/", type: "adjective", example: "We need additional information to proceed.", meaning: "thêm vào", exampleMeaning: "Chúng tôi cần thêm thông tin để tiến hành." },
-        { word: "solicit", ipa: "/səˈlɪsɪt/", type: "verb", example: "The charity solicited donations from the public.", meaning: "xin", exampleMeaning: "Tổ chức từ thiện đã xin quyên góp từ công chúng." },
-        { word: "markets", ipa: "/ˈmɑːrkɪts/", type: "noun", example: "The company targets international markets.", meaning: "thị trường", exampleMeaning: "Công ty nhắm đến các thị trường quốc tế." },
-        { word: "job advertise", ipa: "/dʒɒb ˈædvərtaɪz/", type: "phrase", example: "The company will job advertise next week.", meaning: "quảng cáo việc làm", exampleMeaning: "Công ty sẽ quảng cáo việc làm vào tuần tới." },
-        { word: "facilities", ipa: "/fəˈsɪlɪtiz/", type: "noun", example: "The school provides modern facilities for students.", meaning: "cơ sở vật chất", exampleMeaning: "Trường học cung cấp cơ sở vật chất hiện đại cho học sinh." },
-        { word: "furniture", ipa: "/ˈfɜːrnɪtʃər/", type: "noun", example: "They bought new furniture for the house.", meaning: "đồ nội thất", exampleMeaning: "Họ đã mua đồ nội thất mới cho ngôi nhà." },
-        { word: "latest book", ipa: "/ˈleɪtɪst bʊk/", type: "phrase", example: "Have you read the latest book by that author?", meaning: "cuốn sách mới nhất", exampleMeaning: "Bạn đã đọc cuốn sách mới nhất của tác giả đó chưa?" },
-        { word: "mechanic", ipa: "/məˈkænɪk/", type: "noun", example: "The mechanic fixed my car quickly.", meaning: "thợ máy", exampleMeaning: "Thợ máy đã sửa xe của tôi nhanh chóng." },
-        { word: "monthly", ipa: "/ˈmʌnθli/", type: "adjective", example: "We receive a monthly report from the team.", meaning: "hàng tháng", exampleMeaning: "Chúng tôi nhận báo cáo hàng tháng từ đội ngũ." },
-        { word: "passes", ipa: "/ˈpæsɪz/", type: "noun", example: "He collected several passes for the event.", meaning: "vé thông hành", exampleMeaning: "Anh ấy đã thu thập vài vé thông hành cho sự kiện." },
-        { word: "west", ipa: "/wɛst/", type: "noun", example: "The sun sets in the west.", meaning: "phía tây", exampleMeaning: "Mặt trời lặn ở phía tây." },
-        { word: "springfield", ipa: "/ˈsprɪŋˌfiːld/", type: "noun", example: "Springfield is a small town in the region.", meaning: "Springfield", exampleMeaning: "Springfield là một thị trấn nhỏ trong khu vực." },
-        { word: "percent", ipa: "/pərˈsɛnt/", type: "noun", example: "The tax rate is ten percent.", meaning: "phần trăm", exampleMeaning: "Tỷ lệ thuế là mười phần trăm." },
-        { word: "discount", ipa: "/ˈdɪskaʊnt/", type: "noun", example: "They offered a discount on all items.", meaning: "giảm giá", exampleMeaning: "Họ cung cấp giảm giá cho tất cả các mặt hàng." },
-        { word: "purchase", ipa: "/ˈpɜːrtʃəs/", type: "noun", example: "The purchase of the house was completed yesterday.", meaning: "sự mua", exampleMeaning: "Việc mua nhà đã hoàn tất hôm qua." },
-        { word: "must", ipa: "/mʌst/", type: "verb", example: "You must finish your homework.", meaning: "phải", exampleMeaning: "Bạn phải hoàn thành bài tập về nhà." },
-        { word: "mountains", ipa: "/ˈmaʊntənz/", type: "noun", example: "The mountains offer a stunning view.", meaning: "núi", exampleMeaning: "Những ngọn núi mang lại một khung cảnh tuyệt đẹp." },
-        { word: "surrounding", ipa: "/səˈraʊndɪŋ/", type: "adjective", example: "The surrounding area is full of wildlife.", meaning: "xung quanh", exampleMeaning: "Khu vực xung quanh đầy động vật hoang dã." },
-        { word: "hometown", ipa: "/ˈhoʊmˌtaʊn/", type: "noun", example: "She returned to her hometown for the holidays.", meaning: "quê nhà", exampleMeaning: "Cô ấy trở về quê nhà để nghỉ lễ." },
-        { word: "young man", ipa: "/jʌŋ mæn/", type: "phrase", example: "The young man helped an elderly lady cross the street.", meaning: "chàng trai trẻ", exampleMeaning: "Chàng trai trẻ đã giúp một bà cụ qua đường." },
-        { word: "rural", ipa: "/ˈrʊərəl/", type: "adjective", example: "They live in a rural area far from the city.", meaning: "nông thôn", exampleMeaning: "Họ sống ở một khu vực nông thôn xa thành phố." },
-        { word: "permission", ipa: "/pərˈmɪʃn̩/", type: "noun", example: "You need permission to enter the room.", meaning: "sự cho phép", exampleMeaning: "Bạn cần sự cho phép để vào phòng." },
-        { word: "signature", ipa: "/ˈsɪɡnətʃər/", type: "noun", example: "Please sign your signature on the document.", meaning: "chữ ký", exampleMeaning: "Vui lòng ký chữ ký của bạn trên tài liệu." },
-        { word: "exclude", ipa: "/ɪkˈskluːd/", type: "verb", example: "They decided to exclude him from the meeting.", meaning: "loại trừ", exampleMeaning: "Họ quyết định loại trừ anh ấy khỏi cuộc họp." },
-        { word: "guardian", ipa: "/ˈɡɑːrdiən/", type: "noun", example: "The guardian took care of the child.", meaning: "người giám hộ", exampleMeaning: "Người giám hộ đã chăm sóc đứa trẻ." },
-        { word: "field trip", ipa: "/fiːld trɪp/", type: "phrase", example: "The students went on a field trip to the museum.", meaning: "chuyến đi thực tế", exampleMeaning: "Học sinh đã đi chuyến thực tế đến bảo tàng." },
-        { word: "account", ipa: "/əˈkaʊnt/", type: "noun", example: "She opened a new bank account.", meaning: "tài khoản", exampleMeaning: "Cô ấy đã mở một tài khoản ngân hàng mới." },
-        { word: "accomplish", ipa: "/əˈkɒmplɪʃ/", type: "verb", example: "He accomplished his goal after years of effort.", meaning: "hoàn thành", exampleMeaning: "Anh ấy đã hoàn thành mục tiêu sau nhiều năm nỗ lực." },
-        { word: "reduce", ipa: "/rɪˈdjuːs/", type: "verb", example: "We need to reduce our energy consumption.", meaning: "giảm", exampleMeaning: "Chúng ta cần giảm tiêu thụ năng lượng." },
-        { word: "stockholder", ipa: "/ˈstɒkˌhəʊldər/", type: "noun", example: "The stockholders voted on the new policy.", meaning: "cổ đông", exampleMeaning: "Các cổ đông đã bỏ phiếu về chính sách mới." },
-        { word: "situate", ipa: "/ˈsɪtʃueɪt/", type: "verb", example: "The hotel is situated near the beach.", meaning: "đặt", exampleMeaning: "Khách sạn được đặt gần bãi biển." },
-        { word: "pessimistic", ipa: "/ˌpɛsɪˈmɪstɪk/", type: "adjective", example: "He is pessimistic about the future.", meaning: "bi quan", exampleMeaning: "Anh ấy bi quan về tương lai." },
-        { word: "advertise", ipa: "/ˈædvərtaɪz/", type: "verb", example: "The company will advertise the new product on TV.", meaning: "quảng cáo", exampleMeaning: "Công ty sẽ quảng cáo sản phẩm mới trên TV." },
-        { word: "currently", ipa: "/ˈkʌrəntli/", type: "adverb", example: "She is currently working on a new project.", meaning: "hiện tại", exampleMeaning: "Cô ấy hiện đang làm việc trên một dự án mới." },
-        { word: "fine", ipa: "/faɪn/", type: "noun", example: "He paid a fine for parking illegally.", meaning: "phạt tiền", exampleMeaning: "Anh ấy đã trả tiền phạt vì đậu xe trái phép." },
+        { word: "construction", ipa: "/kənˈstrʌkʃən/", type: "noun", example: "The construction of the bridge took two years.", meaning: "Xây dựng", exampleMeaning: "Việc xây dựng cây cầu mất hai năm." },
+        { word: "convention", ipa: "/kənˈvɛnʃən/", type: "noun", example: "The convention attracted thousands of people.", meaning: "Hội nghị, đại hội", exampleMeaning: "Đại hội đã thu hút hàng nghìn người." },
+        { word: "copy", ipa: "/ˈkɒpi/", type: "noun/verb", example: "Can you make a copy of this document?", meaning: "Bản sao, sao chép", exampleMeaning: "Bạn có thể sao chép tài liệu này không?" },
+        { word: "correct", ipa: "/kəˈrɛkt/", type: "adjective/verb", example: "Is this answer correct?", meaning: "Đúng, sửa lại", exampleMeaning: "Câu trả lời này có đúng không?" },
+        { word: "cost", ipa: "/kɔːst/", type: "noun/verb", example: "The cost of the trip was high.", meaning: "Chi phí", exampleMeaning: "Chi phí của chuyến đi rất cao." },
+        { word: "country", ipa: "/ˈkʌntri/", type: "noun", example: "She lives in a small country town.", meaning: "Quốc gia, vùng quê", exampleMeaning: "Cô ấy sống ở một thị trấn nhỏ ở vùng quê." },
+        { word: "course", ipa: "/kɔːrs/", type: "noun", example: "I’m taking a cooking course this summer.", meaning: "Khóa học, lộ trình", exampleMeaning: "Tôi đang tham gia một khóa học nấu ăn mùa hè này." },
+        { word: "cover", ipa: "/ˈkʌvər/", type: "verb/noun", example: "The book cover is very colorful.", meaning: "Che phủ, bìa", exampleMeaning: "Bìa sách rất sặc sỡ." },
+        { word: "customer", ipa: "/ˈkʌstəmər/", type: "noun", example: "The customer complained about the service.", meaning: "Khách hàng", exampleMeaning: "Khách hàng phàn nàn về dịch vụ." },
+        { word: "date", ipa: "/deɪt/", type: "noun/verb", example: "What’s the date today?", meaning: "Ngày, hẹn hò", exampleMeaning: "Hôm nay là ngày bao nhiêu?" },
+        { word: "deadline", ipa: "/ˈdɛdlaɪn/", type: "noun", example: "The project deadline is next Friday.", meaning: "Hạn chót", exampleMeaning: "Hạn chót của dự án là thứ Sáu tới." },
+        { word: "decision", ipa: "/dɪˈsɪʒən/", type: "noun", example: "We made a decision to move forward.", meaning: "Quyết định", exampleMeaning: "Chúng tôi đã đưa ra quyết định tiến lên." },
+        { word: "decrease", ipa: "/dɪˈkriːs/", type: "verb/noun", example: "The temperature will decrease later.", meaning: "Giảm, sự giảm", exampleMeaning: "Nhiệt độ sẽ giảm vào sau này." },
+        { word: "deliver", ipa: "/dɪˈlɪvər/", type: "verb", example: "The package was delivered yesterday.", meaning: "Giao hàng", exampleMeaning: "Gói hàng đã được giao hôm qua." },
+        { word: "demand", ipa: "/dɪˈmænd/", type: "noun/verb", example: "There is a high demand for electric cars.", meaning: "Nhu cầu, đòi hỏi", exampleMeaning: "Có nhu cầu lớn về xe điện." },
+        { word: "department", ipa: "/dɪˈpɑːrtmənt/", type: "noun", example: "She works in the marketing department.", meaning: "Bộ phận, phòng ban", exampleMeaning: "Cô ấy làm việc ở bộ phận tiếp thị." },
+        { word: "destination", ipa: "/ˌdɛstɪˈneɪʃən/", type: "noun", example: "Paris is our destination for the trip.", meaning: "Điểm đến", exampleMeaning: "Paris là điểm đến của chuyến đi của chúng tôi." },
+        { word: "develop", ipa: "/dɪˈvɛləp/", type: "verb", example: "The company is developing a new product.", meaning: "Phát triển", exampleMeaning: "Công ty đang phát triển một sản phẩm mới." },
+        { word: "direct", ipa: "/dɪˈrɛkt/", type: "adjective/verb", example: "He gave me direct instructions.", meaning: "Trực tiếp, chỉ đạo", exampleMeaning: "Anh ấy đã đưa cho tôi các hướng dẫn trực tiếp." },
+        { word: "discussion", ipa: "/dɪˈskʌʃən/", type: "noun", example: "We had a long discussion about the project.", meaning: "Thảo luận", exampleMeaning: "Chúng tôi đã có một cuộc thảo luận dài về dự án." },
+        { word: "distribute", ipa: "/dɪˈstrɪbjuːt/", type: "verb", example: "They distributed flyers in the neighborhood.", meaning: "Phân phối, phát", exampleMeaning: "Họ đã phát tờ rơi trong khu dân cư." },
+        { word: "do", ipa: "/duː/", type: "verb", example: "I need to do my homework.", meaning: "Làm", exampleMeaning: "Tôi cần làm bài tập về nhà." },
+        { word: "document", ipa: "/ˈdɒkjumənt/", type: "noun", example: "Please bring the document to the meeting.", meaning: "Tài liệu", exampleMeaning: "Vui lòng mang tài liệu đến cuộc họp." },
+        { word: "done", ipa: "/dʌn/", type: "verb", example: "The work is done.", meaning: "Hoàn thành", exampleMeaning: "Công việc đã hoàn thành." },
+        { word: "don’t", ipa: "/doʊnt/", type: "contraction", example: "Don’t forget to call me.", meaning: "Đừng", exampleMeaning: "Đừng quên gọi cho tôi." },
+        { word: "drive", ipa: "/draɪv/", type: "verb/noun", example: "He likes to drive fast cars.", meaning: "Lái xe, sự thúc đẩy", exampleMeaning: "Anh ấy thích lái xe hơi nhanh." },
+        { word: "due", ipa: "/duː/", type: "adjective", example: "The payment is due tomorrow.", meaning: "Đến hạn", exampleMeaning: "Thanh toán đến hạn vào ngày mai." },
+        { word: "each other", ipa: "/iːtʃ ˈʌðər/", type: "pronoun", example: "They help each other with their work.", meaning: "Nhau", exampleMeaning: "Họ giúp đỡ lẫn nhau trong công việc." },
+        { word: "early", ipa: "/ˈɜːrli/", type: "adverb/adjective", example: "We arrived early for the movie.", meaning: "Sớm", exampleMeaning: "Chúng tôi đến sớm cho buổi chiếu phim." },
+        { word: "edit", ipa: "/ˈɛdɪt/", type: "verb", example: "She edited the article before publishing.", meaning: "Sửa đổi, biên tập", exampleMeaning: "Cô ấy đã chỉnh sửa bài viết trước khi xuất bản." },
+        { word: "efficient", ipa: "/ɪˈfɪʃənt/", type: "adjective", example: "The new system is very efficient.", meaning: "Hiệu quả", exampleMeaning: "Hệ thống mới rất hiệu quả." },
+        { word: "email", ipa: "/ˈiːmeɪl/", type: "noun/verb", example: "I sent you an email yesterday.", meaning: "Email", exampleMeaning: "Tôi đã gửi cho bạn một email hôm qua." },
+        { word: "engine", ipa: "/ˈɛndʒɪn/", type: "noun", example: "The engine of the car needs repair.", meaning: "Động cơ", exampleMeaning: "Động cơ của xe cần được sửa chữa." },
+        { word: "estimated", ipa: "/ˈɛstɪmeɪtɪd/", type: "adjective", example: "The estimated cost is $500.", meaning: "Ước tính", exampleMeaning: "Chi phí ước tính là 500 đô la." },
+        { word: "exhibition", ipa: "/ˌɛksɪˈbɪʃən/", type: "noun", example: "The art exhibition attracted many visitors.", meaning: "Triển lãm", exampleMeaning: "Triển lãm nghệ thuật đã thu hút nhiều khách tham quan." },
+        { word: "expand", ipa: "/ɪkˈspænd/", type: "verb", example: "The company plans to expand overseas.", meaning: "Mở rộng", exampleMeaning: "Công ty dự định mở rộng ra nước ngoài." },
+        { word: "extend", ipa: "/ɪkˈstɛnd/", type: "verb", example: "They extended the deadline by one week.", meaning: "Kéo dài", exampleMeaning: "Họ đã kéo dài hạn chót thêm một tuần." },
+        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
+        { word: "fan", ipa: "/fæn/", type: "noun", example: "The fan keeps the room cool.", meaning: "Quạt, người hâm mộ", exampleMeaning: "Cái quạt giữ cho phòng mát mẻ." },
+        { word: "fax", ipa: "/fæks/", type: "noun/verb", example: "Please fax the document to the office.", meaning: "Fax, gửi fax", exampleMeaning: "Vui lòng fax tài liệu đến văn phòng." },
+        { word: "fill", ipa: "/fɪl/", type: "verb", example: "Can you fill this form out?", meaning: "Điền, lấp đầy", exampleMeaning: "Bạn có thể điền vào mẫu này không?" },
+        { word: "finding", ipa: "/ˈfaɪndɪŋ/", type: "noun", example: "The finding surprised the researchers.", meaning: "Sự khám phá, phát hiện", exampleMeaning: "Phát hiện đã làm ngạc nhiên các nhà nghiên cứu." },
+        { word: "finished", ipa: "/ˈfɪnɪʃt/", type: "adjective", example: "The project is finished on time.", meaning: "Hoàn thành", exampleMeaning: "Dự án đã hoàn thành đúng hạn." },
+        { word: "fix", ipa: "/fɪks/", type: "verb", example: "He fixed the broken chair.", meaning: "Sửa chữa", exampleMeaning: "Anh ấy đã sửa chiếc ghế bị hỏng." },
+        { word: "flight", ipa: "/flaɪt/", type: "noun", example: "Our flight leaves at 8 AM.", meaning: "Chuyến bay", exampleMeaning: "Chuyến bay của chúng tôi cất cánh lúc 8 giờ sáng." },
+        { word: "follow", ipa: "/ˈfɒloʊ/", type: "verb", example: "Please follow the instructions carefully.", meaning: "Theo sau, làm theo", exampleMeaning: "Vui lòng làm theo hướng dẫn cẩn thận." },
+        { word: "forecast", ipa: "/ˈfɔːrkæst/", type: "noun/verb", example: "The weather forecast predicts rain.", meaning: "Dự báo", exampleMeaning: "Dự báo thời tiết dự đoán có mưa." },
+        { word: "form", ipa: "/fɔːrm/", type: "noun/verb", example: "Fill out this form to apply.", meaning: "Biểu mẫu, hình dạng", exampleMeaning: "Điền vào biểu mẫu này để nộp đơn." },
+        { word: "free", ipa: "/friː/", type: "adjective", example: "This service is free of charge.", meaning: "Miễn phí, tự do", exampleMeaning: "Dịch vụ này miễn phí." },
+        { word: "friday", ipa: "/ˈfraɪdeɪ/", type: "noun", example: "The meeting is scheduled for Friday.", meaning: "Thứ Sáu", exampleMeaning: "Cuộc họp được lên lịch vào Thứ Sáu." },
+        { word: "get", ipa: "/ɡɛt/", type: "verb", example: "I need to get some groceries.", meaning: "Lấy, nhận", exampleMeaning: "Tôi cần đi lấy một số thực phẩm." },
+        { word: "go", ipa: "/ɡoʊ/", type: "verb", example: "Let’s go to the park.", meaning: "Đi", exampleMeaning: "Hãy đi công viên." },
+        { word: "gone", ipa: "/ɡɒn/", type: "verb", example: "She has gone to the store.", meaning: "Đã đi", exampleMeaning: "Cô ấy đã đi đến cửa hàng." },
+        { word: "guideline", ipa: "/ˈɡaɪdlaɪn/", type: "noun", example: "Follow the guidelines for safety.", meaning: "Hướng dẫn", exampleMeaning: "Tuân theo hướng dẫn để đảm bảo an toàn." },
+        { word: "hair cut", ipa: "/hɛr kʌt/", type: "noun", example: "I need a haircut before the party.", meaning: "Cắt tóc", exampleMeaning: "Tôi cần cắt tóc trước bữa tiệc." },
+        { word: "hanging", ipa: "/ˈhæŋɪŋ/", type: "verb/adjective", example: "The picture is hanging on the wall.", meaning: "Treo, đang treo", exampleMeaning: "Bức tranh đang treo trên tường." },
+        { word: "hard", ipa: "/hɑːrd/", type: "adjective", example: "This test is very hard.", meaning: "Khó, cứng", exampleMeaning: "Bài kiểm tra này rất khó." },
+        { word: "held", ipa: "/hɛld/", type: "verb", example: "The event was held last weekend.", meaning: "Được tổ chức", exampleMeaning: "Sự kiện đã được tổ chức cuối tuần trước." },
+        { word: "help", ipa: "/hɛlp/", type: "verb/noun", example: "Can you help me with this task?", meaning: "Giúp đỡ", exampleMeaning: "Bạn có thể giúp tôi với công việc này không?" },
+        { word: "helpful", ipa: "/ˈhɛlpfəl/", type: "adjective", example: "Her advice was very helpful.", meaning: "Hữu ích", exampleMeaning: "Lời khuyên của cô ấy rất hữu ích." },
+        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
+        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
+        { word: "hope", ipa: "/hoʊp/", type: "verb/noun", example: "I hope it doesn’t rain today.", meaning: "Hy vọng", exampleMeaning: "Tôi hy vọng hôm nay không mưa." },
+        { word: "hot", ipa: "/hɒt/", type: "adjective", example: "It’s very hot outside.", meaning: "Nóng", exampleMeaning: "Bên ngoài rất nóng." },
+        { word: "idea", ipa: "/aɪˈdiːə/", type: "noun", example: "She had a great idea for the project.", meaning: "Ý tưởng", exampleMeaning: "Cô ấy có một ý tưởng tuyệt vời cho dự án." },
+        { word: "if", ipa: "/ɪf/", type: "conjunction", example: "I’ll go if it doesn’t rain.", meaning: "Nếu", exampleMeaning: "Tôi sẽ đi nếu trời không mưa." },
+        { word: "in time", ipa: "/ɪn taɪm/", type: "adverb", example: "We arrived in time for the movie.", meaning: "Đúng giờ", exampleMeaning: "Chúng tôi đến đúng giờ cho buổi chiếu phim." },
+        { word: "in-charge", ipa: "/ɪn tʃɑːrdʒ/", type: "noun/adjective", example: "She is in charge of the project.", meaning: "Phụ trách", exampleMeaning: "Cô ấy phụ trách dự án." },
+        { word: "indoor", ipa: "/ˈɪndɔːr/", type: "adjective", example: "The event will be held indoor due to rain.", meaning: "Trong nhà", exampleMeaning: "Sự kiện sẽ được tổ chức trong nhà do trời mưa." },
+        { word: "informative", ipa: "/ɪnˈfɔːrmətɪv/", type: "adjective", example: "The presentation was very informative.", meaning: "Hữu ích, cung cấp thông tin", exampleMeaning: "Bài thuyết trình rất hữu ích." },
+        { word: "ink", ipa: "/ɪŋk/", type: "noun", example: "The pen ran out of ink.", meaning: "Mực", exampleMeaning: "Cây bút hết mực rồi." },
+        { word: "instruction", ipa: "/ɪnˈstrʌkʃən/", type: "noun", example: "Follow the instructions carefully.", meaning: "Hướng dẫn", exampleMeaning: "Làm theo hướng dẫn cẩn thận." },
         { word: "absence", ipa: "/ˈæbsəns/", type: "noun", example: "His absence from the meeting was noticeable.", meaning: "sự vắng mặt", exampleMeaning: "Sự vắng mặt của anh ấy trong cuộc họp rất dễ nhận thấy." },
         { word: "addressing", ipa: "/əˈdrɛsɪŋ/", type: "verb", example: "She is addressing the issue in her speech.", meaning: "giải quyết", exampleMeaning: "Cô ấy đang giải quyết vấn đề trong bài phát biểu của mình." },
         { word: "agency", ipa: "/ˈeɪdʒənsi/", type: "noun", example: "The travel agency arranged our trip.", meaning: "cơ quan", exampleMeaning: "Cơ quan du lịch đã sắp xếp chuyến đi của chúng tôi." },
@@ -794,6 +841,86 @@
         { word: "conflict", ipa: "/ˈkɒnflɪkt/", type: "noun/verb", example: "There was a conflict between the two teams.", meaning: "mâu thuẫn, xung đột", exampleMeaning: "Có một mâu thuẫn giữa hai đội." },
         { word: "connect", ipa: "/kəˈnɛkt/", type: "verb", example: "The cables connect the devices to the network.", meaning: "kết nối", exampleMeaning: "Các dây cáp kết nối các thiết bị với mạng." }
     ];
+    let vocabForReading = [
+    { word: "advancement", ipa: "/ədˈvænsmənt/", type: "noun", example: "The company is focused on the advancement of technology.", meaning: "sự tiến bộ", exampleMeaning: "Công ty đang tập trung vào sự tiến bộ của công nghệ." },
+        { word: "position", ipa: "/pəˈzɪʃn̩/", type: "noun", example: "He holds a senior position in the company.", meaning: "vị trí", exampleMeaning: "Anh ấy giữ một vị trí cao cấp trong công ty." },
+        { word: "encourage", ipa: "/ɪnˈkʌrɪdʒ/", type: "verb", example: "The teacher encouraged the students to ask questions.", meaning: "khuyến khích", exampleMeaning: "Giáo viên khuyến khích học sinh đặt câu hỏi." },
+        { word: "notify", ipa: "/ˈnoʊtɪfaɪ/", type: "verb", example: "Please notify me of any changes.", meaning: "thông báo", exampleMeaning: "Xin vui lòng thông báo cho tôi biết bất kỳ sự thay đổi nào." },
+        { word: "discriminate", ipa: "/dɪsˈkrɪmɪneɪt/", type: "verb", example: "The law prohibits employers from discriminating against employees based on age.", meaning: "phân biệt đối xử", exampleMeaning: "Luật pháp cấm các nhà tuyển dụng phân biệt đối xử với nhân viên dựa trên tuổi tác." },
+        { word: "against", ipa: "/əˈɡɛnst/", type: "preposition", example: "She leaned against the wall.", meaning: "chống lại", exampleMeaning: "Cô ấy tựa vào tường." },
+        { word: "anyone else", ipa: "/ˈeniˌwʌn ˈɛls/", type: "phrase", example: "Is anyone else coming to the party?", meaning: "bất kỳ ai khác", exampleMeaning: "Có ai khác đến buổi tiệc không?" },
+        { word: "have been", ipa: "/hæv bɪn/", type: "phrase", example: "They have been working here for years.", meaning: "đã từng ở", exampleMeaning: "Họ đã làm việc ở đây nhiều năm rồi." },
+        { word: "had been", ipa: "/hæd bɪn/", type: "phrase", example: "She had been to Paris before the trip.", meaning: "đã từng ở", exampleMeaning: "Cô ấy đã từng đến Paris trước chuyến đi." },
+        { word: "installing", ipa: "/ɪnˈstɔːlɪŋ/", type: "verb", example: "They are installing new software on the computers.", meaning: "lắp đặt", exampleMeaning: "Họ đang cài đặt phần mềm mới trên máy tính." },
+        { word: "operate", ipa: "/ˈɒpəreɪt/", type: "verb", example: "The surgeon will operate on the patient tomorrow.", meaning: "hoạt động", exampleMeaning: "Bác sĩ phẫu thuật sẽ phẫu thuật cho bệnh nhân vào ngày mai." },
+        { word: "allow", ipa: "/əˈlaʊ/", type: "verb", example: "The rules allow students to leave early.", meaning: "cho phép", exampleMeaning: "Quy định cho phép học sinh ra sớm." },
+        { word: "remind", ipa: "/rɪˈmaɪnd/", type: "verb", example: "Please remind me to call her later.", meaning: "nhắc nhở", exampleMeaning: "Vui lòng nhắc tôi gọi cho cô ấy sau." },
+        { word: "important", ipa: "/ɪmˈpɔːrtnt/", type: "adjective", example: "It is important to finish the project on time.", meaning: "quan trọng", exampleMeaning: "Việc hoàn thành dự án đúng hạn là quan trọng." },
+        { word: "individual", ipa: "/ˌɪndɪˈvɪdʒuəl/", type: "adjective", example: "Each individual has unique talents.", meaning: "cá nhân", exampleMeaning: "Mỗi cá nhân có những tài năng riêng biệt." },
+        { word: "extensively", ipa: "/ɪkˈstɛnsɪvli/", type: "adverb", example: "The topic was discussed extensively in the meeting.", meaning: "rộng rãi", exampleMeaning: "Chủ đề đã được thảo luận rộng rãi trong cuộc họp." },
+        { word: "housing", ipa: "/ˈhaʊzɪŋ/", type: "noun", example: "The government is investing in affordable housing.", meaning: "nhà ở", exampleMeaning: "Chính phủ đang đầu tư vào nhà ở giá rẻ." },
+        { word: "honor", ipa: "/ˈɒnər/", type: "noun", example: "She received an honor for her contributions.", meaning: "danh dự", exampleMeaning: "Cô ấy nhận được một danh dự cho những đóng góp của mình." },
+        { word: "librarian", ipa: "/laɪˈbrɛəriən/", type: "noun", example: "The librarian helped me find the book.", meaning: "thủ thư", exampleMeaning: "Thủ thư đã giúp tôi tìm cuốn sách." },
+        { word: "unfamiliar", ipa: "/ˌʌnfəˈmɪliər/", type: "adjective", example: "The language was unfamiliar to him.", meaning: "không quen thuộc", exampleMeaning: "Ngôn ngữ đó không quen thuộc với anh ấy." },
+        { word: "electronic", ipa: "/ɪˌlɛkˈtrɒnɪk/", type: "adjective", example: "She works with electronic devices daily.", meaning: "điện tử", exampleMeaning: "Cô ấy làm việc với các thiết bị điện tử hàng ngày." },
+        { word: "questionnaires", ipa: "/ˌkwɛstʃəˈnɛərz/", type: "noun", example: "We distributed questionnaires to gather feedback.", meaning: "bảng câu hỏi", exampleMeaning: "Chúng tôi phát bảng câu hỏi để thu thập phản hồi." },
+        { word: "answer", ipa: "/ˈænsər/", type: "noun", example: "His answer to the question was clear.", meaning: "câu trả lời", exampleMeaning: "Câu trả lời của anh ấy cho câu hỏi rất rõ ràng." },
+        { word: "reference", ipa: "/ˈrɛfərəns/", type: "noun", example: "She provided a reference for the job application.", meaning: "tài liệu tham khảo", exampleMeaning: "Cô ấy cung cấp một tài liệu tham khảo cho đơn xin việc." },
+        { word: "considered", ipa: "/kənˈsɪdərd/", type: "verb", example: "They considered all options before deciding.", meaning: "xem xét", exampleMeaning: "Họ đã xem xét tất cả các lựa chọn trước khi quyết định." },
+        { word: "productivity", ipa: "/ˌprɒdʌkˈtɪvɪti/", type: "noun", example: "The new system increased productivity at work.", meaning: "năng suất", exampleMeaning: "Hệ thống mới đã tăng năng suất làm việc." },
+        { word: "decided", ipa: "/dɪˈsaɪdɪd/", type: "adjective", example: "She was very decided about her career choice.", meaning: "quyết định", exampleMeaning: "Cô ấy rất quyết định về lựa chọn sự nghiệp của mình." },
+        { word: "implement", ipa: "/ˈɪmplɪment/", type: "verb", example: "The team will implement the new strategy next month.", meaning: "thực hiện", exampleMeaning: "Đội ngũ sẽ thực hiện chiến lược mới vào tháng tới." },
+        { word: "manufacturing", ipa: "/ˌmænjʊˈfæktʃərɪŋ/", type: "noun", example: "Manufacturing cars requires advanced technology.", meaning: "sản xuất", exampleMeaning: "Sản xuất ô tô đòi hỏi công nghệ tiên tiến." },
+        { word: "process", ipa: "/ˈprəʊsɛs/", type: "noun", example: "The process of learning takes time.", meaning: "quá trình", exampleMeaning: "Quá trình học tập mất thời gian." },
+        { word: "economic studies", ipa: "/ˌiːkəˈnɒmɪk ˈstʌdiz/", type: "phrase", example: "He is pursuing economic studies at university.", meaning: "nghiên cứu kinh tế", exampleMeaning: "Anh ấy đang theo đuổi nghiên cứu kinh tế tại đại học." },
+        { word: "predicted", ipa: "/prɪˈdɪktɪd/", type: "verb", example: "The weather forecast predicted rain for tomorrow.", meaning: "dự đoán", exampleMeaning: "Dự báo thời tiết dự đoán mưa cho ngày mai." },
+        { word: "robust", ipa: "/rəʊˈbʌst/", type: "adjective", example: "The system is robust enough to handle large data.", meaning: "mạnh mẽ", exampleMeaning: "Hệ thống đủ mạnh mẽ để xử lý dữ liệu lớn." },
+        { word: "environmentally-friendly", ipa: "/ɪnˌvaɪrənˈmɛntəli ˈfrɛndli/", type: "adjective", example: "They use environmentally-friendly products.", meaning: "thân thiện với môi trường", exampleMeaning: "Họ sử dụng các sản phẩm thân thiện với môi trường." },
+        { word: "inspect", ipa: "/ɪnˈspɛkt/", type: "verb", example: "The manager will inspect the factory tomorrow.", meaning: "kiểm tra", exampleMeaning: "Quản lý sẽ kiểm tra nhà máy vào ngày mai." },
+        { word: "explain", ipa: "/ɪkˈspleɪn/", type: "verb", example: "Can you explain the rules to me?", meaning: "giải thích", exampleMeaning: "Bạn có thể giải thích các quy tắc cho tôi không?" },
+        { word: "additional", ipa: "/əˈdɪʃənl/", type: "adjective", example: "We need additional information to proceed.", meaning: "thêm vào", exampleMeaning: "Chúng tôi cần thêm thông tin để tiến hành." },
+        { word: "solicit", ipa: "/səˈlɪsɪt/", type: "verb", example: "The charity solicited donations from the public.", meaning: "xin", exampleMeaning: "Tổ chức từ thiện đã xin quyên góp từ công chúng." },
+        { word: "markets", ipa: "/ˈmɑːrkɪts/", type: "noun", example: "The company targets international markets.", meaning: "thị trường", exampleMeaning: "Công ty nhắm đến các thị trường quốc tế." },
+        { word: "distribute", ipa: "/dɪˈstrɪbjuːt/", type: "verb", example: "They distribute food to the needy.", meaning: "phân phối", exampleMeaning: "Họ phân phối thực phẩm cho người cần." },
+        { word: "job advertise", ipa: "/dʒɒb ˈædvərtaɪz/", type: "phrase", example: "The company will job advertise next week.", meaning: "quảng cáo việc làm", exampleMeaning: "Công ty sẽ quảng cáo việc làm vào tuần tới." },
+        { word: "facilities", ipa: "/fəˈsɪlɪtiz/", type: "noun", example: "The school provides modern facilities for students.", meaning: "cơ sở vật chất", exampleMeaning: "Trường học cung cấp cơ sở vật chất hiện đại cho học sinh." },
+        { word: "furniture", ipa: "/ˈfɜːrnɪtʃər/", type: "noun", example: "They bought new furniture for the house.", meaning: "đồ nội thất", exampleMeaning: "Họ đã mua đồ nội thất mới cho ngôi nhà." },
+        { word: "latest book", ipa: "/ˈleɪtɪst bʊk/", type: "phrase", example: "Have you read the latest book by that author?", meaning: "cuốn sách mới nhất", exampleMeaning: "Bạn đã đọc cuốn sách mới nhất của tác giả đó chưa?" },
+        { word: "mechanic", ipa: "/məˈkænɪk/", type: "noun", example: "The mechanic fixed my car quickly.", meaning: "thợ máy", exampleMeaning: "Thợ máy đã sửa xe của tôi nhanh chóng." },
+        { word: "monthly", ipa: "/ˈmʌnθli/", type: "adjective", example: "We receive a monthly report from the team.", meaning: "hàng tháng", exampleMeaning: "Chúng tôi nhận báo cáo hàng tháng từ đội ngũ." },
+        { word: "passes", ipa: "/ˈpæsɪz/", type: "noun", example: "He collected several passes for the event.", meaning: "vé thông hành", exampleMeaning: "Anh ấy đã thu thập vài vé thông hành cho sự kiện." },
+        { word: "west", ipa: "/wɛst/", type: "noun", example: "The sun sets in the west.", meaning: "phía tây", exampleMeaning: "Mặt trời lặn ở phía tây." },
+        { word: "springfield", ipa: "/ˈsprɪŋˌfiːld/", type: "noun", example: "Springfield is a small town in the region.", meaning: "Springfield", exampleMeaning: "Springfield là một thị trấn nhỏ trong khu vực." },
+        { word: "percent", ipa: "/pərˈsɛnt/", type: "noun", example: "The tax rate is ten percent.", meaning: "phần trăm", exampleMeaning: "Tỷ lệ thuế là mười phần trăm." },
+        { word: "discount", ipa: "/ˈdɪskaʊnt/", type: "noun", example: "They offered a discount on all items.", meaning: "giảm giá", exampleMeaning: "Họ cung cấp giảm giá cho tất cả các mặt hàng." },
+        { word: "purchase", ipa: "/ˈpɜːrtʃəs/", type: "noun", example: "The purchase of the house was completed yesterday.", meaning: "sự mua", exampleMeaning: "Việc mua nhà đã hoàn tất hôm qua." },
+        { word: "must", ipa: "/mʌst/", type: "verb", example: "You must finish your homework.", meaning: "phải", exampleMeaning: "Bạn phải hoàn thành bài tập về nhà." },
+        { word: "mountains", ipa: "/ˈmaʊntənz/", type: "noun", example: "The mountains offer a stunning view.", meaning: "núi", exampleMeaning: "Những ngọn núi mang lại một khung cảnh tuyệt đẹp." },
+        { word: "surrounding", ipa: "/səˈraʊndɪŋ/", type: "adjective", example: "The surrounding area is full of wildlife.", meaning: "xung quanh", exampleMeaning: "Khu vực xung quanh đầy động vật hoang dã." },
+        { word: "hometown", ipa: "/ˈhoʊmˌtaʊn/", type: "noun", example: "She returned to her hometown for the holidays.", meaning: "quê nhà", exampleMeaning: "Cô ấy trở về quê nhà để nghỉ lễ." },
+        { word: "young man", ipa: "/jʌŋ mæn/", type: "phrase", example: "The young man helped an elderly lady cross the street.", meaning: "chàng trai trẻ", exampleMeaning: "Chàng trai trẻ đã giúp một bà cụ qua đường." },
+        { word: "rural", ipa: "/ˈrʊərəl/", type: "adjective", example: "They live in a rural area far from the city.", meaning: "nông thôn", exampleMeaning: "Họ sống ở một khu vực nông thôn xa thành phố." },
+        { word: "permission", ipa: "/pərˈmɪʃn̩/", type: "noun", example: "You need permission to enter the room.", meaning: "sự cho phép", exampleMeaning: "Bạn cần sự cho phép để vào phòng." },
+        { word: "signature", ipa: "/ˈsɪɡnətʃər/", type: "noun", example: "Please sign your signature on the document.", meaning: "chữ ký", exampleMeaning: "Vui lòng ký chữ ký của bạn trên tài liệu." },
+        { word: "exclude", ipa: "/ɪkˈskluːd/", type: "verb", example: "They decided to exclude him from the meeting.", meaning: "loại trừ", exampleMeaning: "Họ quyết định loại trừ anh ấy khỏi cuộc họp." },
+        { word: "guardian", ipa: "/ˈɡɑːrdiən/", type: "noun", example: "The guardian took care of the child.", meaning: "người giám hộ", exampleMeaning: "Người giám hộ đã chăm sóc đứa trẻ." },
+        { word: "field trip", ipa: "/fiːld trɪp/", type: "phrase", example: "The students went on a field trip to the museum.", meaning: "chuyến đi thực tế", exampleMeaning: "Học sinh đã đi chuyến thực tế đến bảo tàng." },
+        { word: "account", ipa: "/əˈkaʊnt/", type: "noun", example: "She opened a new bank account.", meaning: "tài khoản", exampleMeaning: "Cô ấy đã mở một tài khoản ngân hàng mới." },
+        { word: "accomplish", ipa: "/əˈkɒmplɪʃ/", type: "verb", example: "He accomplished his goal after years of effort.", meaning: "hoàn thành", exampleMeaning: "Anh ấy đã hoàn thành mục tiêu sau nhiều năm nỗ lực." },
+        { word: "construction", ipa: "/kənˈstrʌkʃn̩/", type: "noun", example: "The construction of the bridge will take two years.", meaning: "xây dựng", exampleMeaning: "Việc xây dựng cầu sẽ mất hai năm." },
+        { word: "reduce", ipa: "/rɪˈdjuːs/", type: "verb", example: "We need to reduce our energy consumption.", meaning: "giảm", exampleMeaning: "Chúng ta cần giảm tiêu thụ năng lượng." },
+        { word: "decrease", ipa: "/dɪˈkriːs/", type: "verb", example: "The temperature will decrease overnight.", meaning: "giảm xuống", exampleMeaning: "Nhiệt độ sẽ giảm xuống qua đêm." },
+        { word: "evaluate", ipa: "/ɪˈvæljueɪt/", type: "verb", example: "The teacher will evaluate the students' performance.", meaning: "đánh giá", exampleMeaning: "Giáo viên sẽ đánh giá hiệu suất của học sinh." },
+        { word: "stockholder", ipa: "/ˈstɒkˌhəʊldər/", type: "noun", example: "The stockholders voted on the new policy.", meaning: "cổ đông", exampleMeaning: "Các cổ đông đã bỏ phiếu về chính sách mới." },
+        { word: "situate", ipa: "/ˈsɪtʃueɪt/", type: "verb", example: "The hotel is situated near the beach.", meaning: "đặt", exampleMeaning: "Khách sạn được đặt gần bãi biển." },
+        { word: "destination", ipa: "/ˌdɛstɪˈneɪʃn̩/", type: "noun", example: "Paris is our final destination.", meaning: "điểm đến", exampleMeaning: "Paris là điểm đến cuối cùng của chúng tôi." },
+        { word: "pessimistic", ipa: "/ˌpɛsɪˈmɪstɪk/", type: "adjective", example: "He is pessimistic about the future.", meaning: "bi quan", exampleMeaning: "Anh ấy bi quan về tương lai." },
+        { word: "advertise", ipa: "/ˈædvərtaɪz/", type: "verb", example: "The company will advertise the new product on TV.", meaning: "quảng cáo", exampleMeaning: "Công ty sẽ quảng cáo sản phẩm mới trên TV." },
+        { word: "currently", ipa: "/ˈkʌrəntli/", type: "adverb", example: "She is currently working on a new project.", meaning: "hiện tại", exampleMeaning: "Cô ấy hiện đang làm việc trên một dự án mới." },
+        { word: "fine", ipa: "/faɪn/", type: "noun", example: "He paid a fine for parking illegally.", meaning: "phạt tiền", exampleMeaning: "Anh ấy đã trả tiền phạt vì đậu xe trái phép." },
+        
+    ];
+    let vocabulary = vocabForListening; // Default to vocabForListening
     let currentIndex = 0;
     let isEditing = false;
     let isShuffled = false;
@@ -845,6 +972,23 @@
             vocabulary = vocabulary.sort((a, b) => a.word.localeCompare(b.word));
             shuffleButton.classList.remove("active");
         }
+        currentIndex = 0;
+        updateCard();
+    }
+
+    function changeVocabList() {
+        const select = document.getElementById("vocabSelect");
+        const selectedValue = select.value;
+        
+        if (selectedValue === "listening") {
+            vocabulary = vocabForListening.slice();
+        } else if (selectedValue === "reading") {
+            vocabulary = vocabForReading.slice();
+        }
+
+        isShuffled = false;
+        document.getElementById("shuffleButton").classList.remove("active");
+        vocabulary.sort((a, b) => a.word.localeCompare(b.word));
         currentIndex = 0;
         updateCard();
     }
@@ -903,6 +1047,12 @@
             return;
         }
         if (confirm("Are you sure you want to delete this word?")) {
+            const selectedValue = document.getElementById("vocabSelect").value;
+            if (selectedValue === "listening") {
+                vocabForListening.splice(currentIndex, 1);
+            } else {
+                vocabForReading.splice(currentIndex, 1);
+            }
             vocabulary.splice(currentIndex, 1);
             if (vocabulary.length === 0) {
                 currentIndex = 0;
@@ -971,7 +1121,16 @@
             return;
         }
 
-        vocabulary.push({ word: newWord, ipa: newIPA, type: newType, example: newExample, meaning: newMeaning, exampleMeaning: newExampleMeaning });
+        const newEntry = { word: newWord, ipa: newIPA, type: newType, example: newExample, meaning: newMeaning, exampleMeaning: newExampleMeaning };
+        vocabulary.push(newEntry);
+        
+        const selectedValue = document.getElementById("vocabSelect").value;
+        if (selectedValue === "listening") {
+            vocabForListening.push(newEntry);
+        } else {
+            vocabForReading.push(newEntry);
+        }
+
         closeAddWordModal();
         currentIndex = vocabulary.length - 1;
         updateCard();
@@ -998,7 +1157,7 @@
             return;
         }
 
-        vocabulary[currentIndex] = { 
+        const updatedEntry = { 
             word: newWord, 
             ipa: newIPA, 
             type: newType, 
@@ -1006,6 +1165,15 @@
             meaning: newMeaning, 
             exampleMeaning: newExampleMeaning 
         };
+        vocabulary[currentIndex] = updatedEntry;
+
+        const selectedValue = document.getElementById("vocabSelect").value;
+        if (selectedValue === "listening") {
+            vocabForListening[currentIndex] = updatedEntry;
+        } else {
+            vocabForReading[currentIndex] = updatedEntry;
+        }
+
         closeAddWordModal();
         updateCard();
     }
@@ -1046,6 +1214,12 @@
 
     function deleteWord(index) {
         if (confirm("Are you sure you want to delete this word?")) {
+            const selectedValue = document.getElementById("vocabSelect").value;
+            if (selectedValue === "listening") {
+                vocabForListening.splice(index, 1);
+            } else {
+                vocabForReading.splice(index, 1);
+            }
             vocabulary.splice(index, 1);
             if (vocabulary.length === 0) {
                 currentIndex = 0;
@@ -1066,13 +1240,11 @@
             .forEach((item, index) => renderWordItem(item, vocabulary.indexOf(item)));
     });
 
-    // Close modals when clicking outside, but prevent interference with button clicks
     document.addEventListener("mousedown", function(event) {
         const addWordModal = document.getElementById("addWordModal");
         const viewWordsModal = document.getElementById("viewWordsModal");
         const target = event.target;
 
-        // Check if the click is outside the modals and not on the buttons that open them
         if (addWordModal.style.display === "block" && 
             !addWordModal.contains(target) && 
             !target.classList.contains("add-btn") && 
