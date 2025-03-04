@@ -35,8 +35,9 @@
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
+            width: 380px;
             max-width: 400px;
+            text-align: center;
         }
 
         /* Card Row with Previous and Next */
@@ -102,7 +103,7 @@
             font-weight: 500;
         }
 
-        /* Buttons Container (split into left and right with separator) */
+        /* Buttons Container */
         .buttons {
             display: flex;
             flex-wrap: wrap;
@@ -136,7 +137,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            min-width: 120px; /* Ensure touch-friendly size on mobile */
+            min-width: 120px;
         }
 
         button:hover {
@@ -149,7 +150,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Button Colors for Functionality */
+        /* Button Colors */
         .add-btn { background: #2ecc71; color: #ffffff; }
         .add-btn:hover { background: #27ae60; }
 
@@ -167,7 +168,7 @@
         .view-btn { background: #3498db; color: #ffffff; }
         .view-btn:hover { background: #2980b9; }
 
-        /* Modal Styling (Add/Edit and View All Words) */
+        /* Modal Styling */
         #addWordModal, #viewWordsModal {
             display: none;
             position: fixed;
@@ -180,7 +181,7 @@
             border-radius: 16px;
             width: 90%;
             max-width: 600px;
-            max-height: 80vh;
+            max-height: 70vh;
             overflow-y: auto;
             animation: slideIn 0.3s ease-out;
             z-index: 1000;
@@ -203,6 +204,7 @@
             font-weight: 600;
             font-size: 1.75rem;
             text-align: center;
+            position: relative;
         }
 
         #addWordModal label {
@@ -336,250 +338,73 @@
         }
 
         .word-item button:nth-of-type(3) {
-            background: #e74c3c; /* Red for Delete */
+            background: #e74c3c;
         }
 
         .word-item button:nth-of-type(3):hover {
             background: #c0392b;
         }
 
-        /* Responsive Design for Modals */
+        /* Responsive Design */
         @media (min-width: 1024px) {
-            /* Desktop: Full layout with buttons split */
-            .card-row {
-                gap: 2rem;
-            }
-
-            .card-container {
-                max-width: 380px;
-            }
-
-            .info {
-                max-width: 400px;
-            }
-
-            .buttons {
-                gap: 1rem;
-            }
-
-            .button-group {
-                flex-wrap: nowrap;
-            }
-
-            button {
-                min-width: 140px;
-            }
-
-            #addWordModal, #viewWordsModal {
-                padding: 2rem;
-                max-width: 480px;
-                width: 90%;
-            }
-
-            #viewWordsModal {
-                max-width: 600px;
-            }
-
-            #addWordModal h3, #viewWordsModal h3 {
-                font-size: 1.75rem;
-            }
-
-            #addWordModal label, #addWordModal input, #viewWordsModal input {
-                font-size: 1rem;
-            }
-
-            #addWordModal button, #viewWordsModal button {
-                font-size: 1rem;
-                padding: 0.85rem 1.5rem;
-            }
-
-            #wordError, #fieldsError {
-                font-size: 0.9rem;
-            }
+            .card-row { gap: 2rem; }
+            .card-container { max-width: 380px; }
+            .info { max-width: 380px; }
+            .buttons { gap: 1rem; }
+            .button-group { flex-wrap: nowrap; }
+            button { min-width: 140px; }
+            #addWordModal, #viewWordsModal { padding: 2rem; max-width: 480px; width: 90%; }
+            #viewWordsModal { max-width: 600px; }
+            #addWordModal h3, #viewWordsModal h3 { font-size: 1.75rem; }
+            #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 1rem; }
+            #addWordModal button, #viewWordsModal button { font-size: 1rem; padding: 0.85rem 1.5rem; }
+            #wordError, #fieldsError { font-size: 0.9rem; }
         }
 
         @media (min-width: 768px) and (max-width: 1023px) {
-            /* Tablet: Adjusted modal size and content */
-            .card-row {
-                gap: 1.5rem;
-                flex-wrap: wrap;
-            }
-
-            .card-container {
-                max-width: 320px;
-                height: 200px;
-            }
-
-            .info {
-                max-width: 350px;
-                font-size: 1rem;
-                padding: 0.5rem 1.25rem;
-            }
-
-            .buttons {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .button-separator {
-                display: none;
-            }
-
-            button {
-                font-size: 0.9rem;
-                padding: 0.65rem 1.25rem;
-                min-width: 100px;
-            }
-
-            #addWordModal, #viewWordsModal {
-                padding: 1.25rem;
-                width: 85%;
-                max-width: 450px;
-            }
-
-            #viewWordsModal {
-                max-width: 550px;
-            }
-
-            #addWordModal h3, #viewWordsModal h3 {
-                font-size: 1.5rem;
-                margin-bottom: 1.25rem;
-            }
-
-            #addWordModal label, #addWordModal input, #viewWordsModal input {
-                font-size: 0.9rem;
-            }
-
-            #addWordModal input {
-                padding: 0.75rem;
-            }
-
-            #addWordModal button, #viewWordsModal button {
-                font-size: 0.9rem;
-                padding: 0.65rem 1.25rem;
-                width: 45%; /* Slightly narrower buttons */
-            }
-
-            #wordError, #fieldsError {
-                font-size: 0.8rem;
-            }
-
-            .word-item {
-                padding: 0.6rem;
-            }
-
-            .word-item button {
-                font-size: 0.8rem;
-                padding: 0.4rem 0.8rem;
-            }
+            .card-row { gap: 1.5rem; flex-wrap: wrap; }
+            .card-container { max-width: 320px; height: 240px; }
+            .info { max-width: 320px; font-size: 1rem; padding: 0.5rem 1.25rem; }
+            .buttons { flex-direction: column; gap: 0.75rem; }
+            .button-group { flex-direction: column; width: 100%; }
+            .button-separator { display: none; }
+            button { font-size: 0.9rem; padding: 0.65rem 1.25rem; min-width: 100px; }
+            #addWordModal, #viewWordsModal { padding: 1.25rem; width: 85%; max-width: 450px; }
+            #viewWordsModal { max-width: 550px; }
+            #addWordModal h3, #viewWordsModal h3 { font-size: 1.5rem; margin-bottom: 1.25rem; }
+            #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 0.9rem; }
+            #addWordModal input { padding: 0.75rem; }
+            #addWordModal button, #viewWordsModal button { font-size: 0.9rem; padding: 0.65rem 1.25rem; width: 45%; }
+            #wordError, #fieldsError { font-size: 0.8rem; }
+            .word-item { padding: 0.6rem; }
+            .word-item button { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
         }
 
         @media (max-width: 767px) {
-            /* Mobile: Full vertical stacking, simplified layout for modals */
-            body {
-                padding: 0.5rem;
-            }
-
-            .card-row {
-                flex-direction: column;
-                gap: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .card-container {
-                max-width: 100%;
-                height: 180px;
-                width: 90%;
-            }
-
-            .info {
-                width: 90%;
-                max-width: 100%;
-                font-size: 0.9rem;
-                padding: 0.5rem 1rem;
-            }
-
-            .buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-                width: 90%;
-            }
-
-            .button-group {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .button-separator {
-                display: none;
-            }
-
-            button {
-                font-size: 0.8rem;
-                padding: 0.5rem 1rem;
-                min-width: 100%;
-                width: 100%;
-            }
-
-            #addWordModal, #viewWordsModal {
-                width: 95%;
-                padding: 1rem;
-                max-width: none; /* Full width on mobile */
-            }
-
-            #addWordModal h3, #viewWordsModal h3 {
-                font-size: 1.25rem;
-                margin-bottom: 1rem;
-            }
-
-            #addWordModal label, #addWordModal input, #viewWordsModal input {
-                font-size: 0.8rem;
-            }
-
-            #addWordModal input {
-                padding: 0.6rem;
-            }
-
-            #addWordModal .modal-buttons, #viewWordsModal .modal-buttons {
-                gap: 0.75rem;
-                flex-direction: column; /* Stack buttons vertically on mobile */
-            }
-
-            #addWordModal button, #viewWordsModal button {
-                font-size: 0.8rem;
-                padding: 0.6rem 1rem;
-                width: 100%; /* Full width buttons on mobile */
-            }
-
-            #wordError, #fieldsError {
-                font-size: 0.7rem;
-            }
-
-            .word-item {
-                padding: 0.5rem;
-            }
-
-            .word-item-buttons {
-                flex-direction: column; /* Stack buttons vertically on mobile */
-                gap: 0.4rem;
-            }
-
-            .word-item button {
-                font-size: 0.7rem;
-                padding: 0.3rem 0.7rem;
-                width: 100%; /* Full width buttons on mobile */
-            }
+            body { padding: 0.5rem; }
+            .card-row { flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+            .card-container { max-width: 100%; height: 240px; width: 90%; }
+            .info { width: 90%; max-width: 100%; font-size: 0.9rem; padding: 0.5rem 1rem; }
+            .buttons { flex-direction: column; gap: 0.5rem; width: 90%; }
+            .button-group { flex-direction: column; width: 100%; }
+            .button-separator { display: none; }
+            button { font-size: 0.8rem; padding: 0.5rem 1rem; min-width: 100%; width: 100%; }
+            #addWordModal, #viewWordsModal { width: 95%; padding: 1rem; max-width: none; }
+            #addWordModal h3, #viewWordsModal h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+            #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 0.8rem; }
+            #addWordModal input { padding: 0.6rem; }
+            #addWordModal .modal-buttons, #viewWordsModal .modal-buttons { gap: 0.75rem; flex-direction: column; }
+            #addWordModal button, #viewWordsModal button { font-size: 0.8rem; padding: 0.6rem 1rem; width: 100%; }
+            #wordError, #fieldsError { font-size: 0.7rem; }
+            .word-item { padding: 0.5rem; }
+            .word-item-buttons { flex-direction: column; gap: 0.4rem; }
+            .word-item button { font-size: 0.7rem; padding: 0.3rem 0.7rem; width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="info" id="cardInfo" style="text-align: center;"></div>
+<div class="info" id="cardInfo"></div>
 
 <div class="card-row">
     <button style="width: 150px;" onclick="prevCard()">← Previous</button>
@@ -598,7 +423,6 @@
         <button class="edit-btn" onclick="showEditWordModal()">Edit Word</button>
         <button class="delete-btn" onclick="deleteCurrentWord()">Delete Word</button>
     </div>
-    <!-- <div class="button-separator"></div> -->
     <div class="button-group">
         <button class="shuffle-btn" id="shuffleButton" onclick="toggleShuffle()">Shuffle</button>
         <button class="view-btn" onclick="showViewWordsModal()">View All Words</button>
@@ -745,7 +569,6 @@
         { word: "exhibition", ipa: "/ˌɛksɪˈbɪʃən/", type: "noun", example: "The art exhibition attracted many visitors.", meaning: "Triển lãm", exampleMeaning: "Triển lãm nghệ thuật đã thu hút nhiều khách tham quan." },
         { word: "expand", ipa: "/ɪkˈspænd/", type: "verb", example: "The company plans to expand overseas.", meaning: "Mở rộng", exampleMeaning: "Công ty dự định mở rộng ra nước ngoài." },
         { word: "extend", ipa: "/ɪkˈstɛnd/", type: "verb", example: "They extended the deadline by one week.", meaning: "Kéo dài", exampleMeaning: "Họ đã kéo dài hạn chót thêm một tuần." },
-        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
         { word: "fan", ipa: "/fæn/", type: "noun", example: "The fan keeps the room cool.", meaning: "Quạt, người hâm mộ", exampleMeaning: "Cái quạt giữ cho phòng mát mẻ." },
         { word: "fax", ipa: "/fæks/", type: "noun/verb", example: "Please fax the document to the office.", meaning: "Fax, gửi fax", exampleMeaning: "Vui lòng fax tài liệu đến văn phòng." },
         { word: "fill", ipa: "/fɪl/", type: "verb", example: "Can you fill this form out?", meaning: "Điền, lấp đầy", exampleMeaning: "Bạn có thể điền vào mẫu này không?" },
@@ -768,8 +591,6 @@
         { word: "held", ipa: "/hɛld/", type: "verb", example: "The event was held last weekend.", meaning: "Được tổ chức", exampleMeaning: "Sự kiện đã được tổ chức cuối tuần trước." },
         { word: "help", ipa: "/hɛlp/", type: "verb/noun", example: "Can you help me with this task?", meaning: "Giúp đỡ", exampleMeaning: "Bạn có thể giúp tôi với công việc này không?" },
         { word: "helpful", ipa: "/ˈhɛlpfəl/", type: "adjective", example: "Her advice was very helpful.", meaning: "Hữu ích", exampleMeaning: "Lời khuyên của cô ấy rất hữu ích." },
-        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
-        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
         { word: "hope", ipa: "/hoʊp/", type: "verb/noun", example: "I hope it doesn’t rain today.", meaning: "Hy vọng", exampleMeaning: "Tôi hy vọng hôm nay không mưa." },
         { word: "hot", ipa: "/hɒt/", type: "adjective", example: "It’s very hot outside.", meaning: "Nóng", exampleMeaning: "Bên ngoài rất nóng." },
         { word: "idea", ipa: "/aɪˈdiːə/", type: "noun", example: "She had a great idea for the project.", meaning: "Ý tưởng", exampleMeaning: "Cô ấy có một ý tưởng tuyệt vời cho dự án." },
@@ -837,79 +658,6 @@
         { word: "working", ipa: "/ˈwɜːrkɪŋ/", type: "adjective/verb", example: "The working conditions are excellent.", meaning: "Làm việc, đang làm việc", exampleMeaning: "Điều kiện làm việc rất tuyệt vời." },
         { word: "workshop", ipa: "/ˈwɜːrkʃɒp/", type: "noun", example: "The workshop will teach basic coding skills.", meaning: "Hội thảo, xưởng", exampleMeaning: "Hội thảo sẽ dạy các kỹ năng lập trình cơ bản." },
         { word: "you", ipa: "/juː/", type: "pronoun", example: "You can do it!", meaning: "Bạn", exampleMeaning: "Bạn có thể làm được!" },
-        { word: "construction", ipa: "/kənˈstrʌkʃən/", type: "noun", example: "The construction of the bridge took two years.", meaning: "Xây dựng", exampleMeaning: "Việc xây dựng cây cầu mất hai năm." },
-        { word: "convention", ipa: "/kənˈvɛnʃən/", type: "noun", example: "The convention attracted thousands of people.", meaning: "Hội nghị, đại hội", exampleMeaning: "Đại hội đã thu hút hàng nghìn người." },
-        { word: "copy", ipa: "/ˈkɒpi/", type: "noun/verb", example: "Can you make a copy of this document?", meaning: "Bản sao, sao chép", exampleMeaning: "Bạn có thể sao chép tài liệu này không?" },
-        { word: "correct", ipa: "/kəˈrɛkt/", type: "adjective/verb", example: "Is this answer correct?", meaning: "Đúng, sửa lại", exampleMeaning: "Câu trả lời này có đúng không?" },
-        { word: "cost", ipa: "/kɔːst/", type: "noun/verb", example: "The cost of the trip was high.", meaning: "Chi phí", exampleMeaning: "Chi phí của chuyến đi rất cao." },
-        { word: "country", ipa: "/ˈkʌntri/", type: "noun", example: "She lives in a small country town.", meaning: "Quốc gia, vùng quê", exampleMeaning: "Cô ấy sống ở một thị trấn nhỏ ở vùng quê." },
-        { word: "course", ipa: "/kɔːrs/", type: "noun", example: "I’m taking a cooking course this summer.", meaning: "Khóa học, lộ trình", exampleMeaning: "Tôi đang tham gia một khóa học nấu ăn mùa hè này." },
-        { word: "cover", ipa: "/ˈkʌvər/", type: "verb/noun", example: "The book cover is very colorful.", meaning: "Che phủ, bìa", exampleMeaning: "Bìa sách rất sặc sỡ." },
-        { word: "customer", ipa: "/ˈkʌstəmər/", type: "noun", example: "The customer complained about the service.", meaning: "Khách hàng", exampleMeaning: "Khách hàng phàn nàn về dịch vụ." },
-        { word: "date", ipa: "/deɪt/", type: "noun/verb", example: "What’s the date today?", meaning: "Ngày, hẹn hò", exampleMeaning: "Hôm nay là ngày bao nhiêu?" },
-        { word: "deadline", ipa: "/ˈdɛdlaɪn/", type: "noun", example: "The project deadline is next Friday.", meaning: "Hạn chót", exampleMeaning: "Hạn chót của dự án là thứ Sáu tới." },
-        { word: "decision", ipa: "/dɪˈsɪʒən/", type: "noun", example: "We made a decision to move forward.", meaning: "Quyết định", exampleMeaning: "Chúng tôi đã đưa ra quyết định tiến lên." },
-        { word: "decrease", ipa: "/dɪˈkriːs/", type: "verb/noun", example: "The temperature will decrease later.", meaning: "Giảm, sự giảm", exampleMeaning: "Nhiệt độ sẽ giảm vào sau này." },
-        { word: "deliver", ipa: "/dɪˈlɪvər/", type: "verb", example: "The package was delivered yesterday.", meaning: "Giao hàng", exampleMeaning: "Gói hàng đã được giao hôm qua." },
-        { word: "demand", ipa: "/dɪˈmænd/", type: "noun/verb", example: "There is a high demand for electric cars.", meaning: "Nhu cầu, đòi hỏi", exampleMeaning: "Có nhu cầu lớn về xe điện." },
-        { word: "department", ipa: "/dɪˈpɑːrtmənt/", type: "noun", example: "She works in the marketing department.", meaning: "Bộ phận, phòng ban", exampleMeaning: "Cô ấy làm việc ở bộ phận tiếp thị." },
-        { word: "destination", ipa: "/ˌdɛstɪˈneɪʃən/", type: "noun", example: "Paris is our destination for the trip.", meaning: "Điểm đến", exampleMeaning: "Paris là điểm đến của chuyến đi của chúng tôi." },
-        { word: "develop", ipa: "/dɪˈvɛləp/", type: "verb", example: "The company is developing a new product.", meaning: "Phát triển", exampleMeaning: "Công ty đang phát triển một sản phẩm mới." },
-        { word: "direct", ipa: "/dɪˈrɛkt/", type: "adjective/verb", example: "He gave me direct instructions.", meaning: "Trực tiếp, chỉ đạo", exampleMeaning: "Anh ấy đã đưa cho tôi các hướng dẫn trực tiếp." },
-        { word: "discussion", ipa: "/dɪˈskʌʃən/", type: "noun", example: "We had a long discussion about the project.", meaning: "Thảo luận", exampleMeaning: "Chúng tôi đã có một cuộc thảo luận dài về dự án." },
-        { word: "distribute", ipa: "/dɪˈstrɪbjuːt/", type: "verb", example: "They distributed flyers in the neighborhood.", meaning: "Phân phối, phát", exampleMeaning: "Họ đã phát tờ rơi trong khu dân cư." },
-        { word: "do", ipa: "/duː/", type: "verb", example: "I need to do my homework.", meaning: "Làm", exampleMeaning: "Tôi cần làm bài tập về nhà." },
-        { word: "document", ipa: "/ˈdɒkjumənt/", type: "noun", example: "Please bring the document to the meeting.", meaning: "Tài liệu", exampleMeaning: "Vui lòng mang tài liệu đến cuộc họp." },
-        { word: "done", ipa: "/dʌn/", type: "verb", example: "The work is done.", meaning: "Hoàn thành", exampleMeaning: "Công việc đã hoàn thành." },
-        { word: "don’t", ipa: "/doʊnt/", type: "contraction", example: "Don’t forget to call me.", meaning: "Đừng", exampleMeaning: "Đừng quên gọi cho tôi." },
-        { word: "drive", ipa: "/draɪv/", type: "verb/noun", example: "He likes to drive fast cars.", meaning: "Lái xe, sự thúc đẩy", exampleMeaning: "Anh ấy thích lái xe hơi nhanh." },
-        { word: "due", ipa: "/duː/", type: "adjective", example: "The payment is due tomorrow.", meaning: "Đến hạn", exampleMeaning: "Thanh toán đến hạn vào ngày mai." },
-        { word: "each other", ipa: "/iːtʃ ˈʌðər/", type: "pronoun", example: "They help each other with their work.", meaning: "Nhau", exampleMeaning: "Họ giúp đỡ lẫn nhau trong công việc." },
-        { word: "early", ipa: "/ˈɜːrli/", type: "adverb/adjective", example: "We arrived early for the movie.", meaning: "Sớm", exampleMeaning: "Chúng tôi đến sớm cho buổi chiếu phim." },
-        { word: "edit", ipa: "/ˈɛdɪt/", type: "verb", example: "She edited the article before publishing.", meaning: "Sửa đổi, biên tập", exampleMeaning: "Cô ấy đã chỉnh sửa bài viết trước khi xuất bản." },
-        { word: "efficient", ipa: "/ɪˈfɪʃənt/", type: "adjective", example: "The new system is very efficient.", meaning: "Hiệu quả", exampleMeaning: "Hệ thống mới rất hiệu quả." },
-        { word: "email", ipa: "/ˈiːmeɪl/", type: "noun/verb", example: "I sent you an email yesterday.", meaning: "Email", exampleMeaning: "Tôi đã gửi cho bạn một email hôm qua." },
-        { word: "engine", ipa: "/ˈɛndʒɪn/", type: "noun", example: "The engine of the car needs repair.", meaning: "Động cơ", exampleMeaning: "Động cơ của xe cần được sửa chữa." },
-        { word: "estimated", ipa: "/ˈɛstɪmeɪtɪd/", type: "adjective", example: "The estimated cost is $500.", meaning: "Ước tính", exampleMeaning: "Chi phí ước tính là 500 đô la." },
-        { word: "exhibition", ipa: "/ˌɛksɪˈbɪʃən/", type: "noun", example: "The art exhibition attracted many visitors.", meaning: "Triển lãm", exampleMeaning: "Triển lãm nghệ thuật đã thu hút nhiều khách tham quan." },
-        { word: "expand", ipa: "/ɪkˈspænd/", type: "verb", example: "The company plans to expand overseas.", meaning: "Mở rộng", exampleMeaning: "Công ty dự định mở rộng ra nước ngoài." },
-        { word: "extend", ipa: "/ɪkˈstɛnd/", type: "verb", example: "They extended the deadline by one week.", meaning: "Kéo dài", exampleMeaning: "Họ đã kéo dài hạn chót thêm một tuần." },
-        { word: "facing", ipa: "/ˈfeɪsɪŋ/", type: "verb/adjective", example: "The building is facing the park.", meaning: "Đối diện, đối mặt", exampleMeaning: "Tòa nhà đối diện với công viên." },
-        { word: "fan", ipa: "/fæn/", type: "noun", example: "The fan keeps the room cool.", meaning: "Quạt, người hâm mộ", exampleMeaning: "Cái quạt giữ cho phòng mát mẻ." },
-        { word: "fax", ipa: "/fæks/", type: "noun/verb", example: "Please fax the document to the office.", meaning: "Fax, gửi fax", exampleMeaning: "Vui lòng fax tài liệu đến văn phòng." },
-        { word: "fill", ipa: "/fɪl/", type: "verb", example: "Can you fill this form out?", meaning: "Điền, lấp đầy", exampleMeaning: "Bạn có thể điền vào mẫu này không?" },
-        { word: "finding", ipa: "/ˈfaɪndɪŋ/", type: "noun", example: "The finding surprised the researchers.", meaning: "Sự khám phá, phát hiện", exampleMeaning: "Phát hiện đã làm ngạc nhiên các nhà nghiên cứu." },
-        { word: "finished", ipa: "/ˈfɪnɪʃt/", type: "adjective", example: "The project is finished on time.", meaning: "Hoàn thành", exampleMeaning: "Dự án đã hoàn thành đúng hạn." },
-        { word: "fix", ipa: "/fɪks/", type: "verb", example: "He fixed the broken chair.", meaning: "Sửa chữa", exampleMeaning: "Anh ấy đã sửa chiếc ghế bị hỏng." },
-        { word: "flight", ipa: "/flaɪt/", type: "noun", example: "Our flight leaves at 8 AM.", meaning: "Chuyến bay", exampleMeaning: "Chuyến bay của chúng tôi cất cánh lúc 8 giờ sáng." },
-        { word: "follow", ipa: "/ˈfɒloʊ/", type: "verb", example: "Please follow the instructions carefully.", meaning: "Theo sau, làm theo", exampleMeaning: "Vui lòng làm theo hướng dẫn cẩn thận." },
-        { word: "forecast", ipa: "/ˈfɔːrkæst/", type: "noun/verb", example: "The weather forecast predicts rain.", meaning: "Dự báo", exampleMeaning: "Dự báo thời tiết dự đoán có mưa." },
-        { word: "form", ipa: "/fɔːrm/", type: "noun/verb", example: "Fill out this form to apply.", meaning: "Biểu mẫu, hình dạng", exampleMeaning: "Điền vào biểu mẫu này để nộp đơn." },
-        { word: "free", ipa: "/friː/", type: "adjective", example: "This service is free of charge.", meaning: "Miễn phí, tự do", exampleMeaning: "Dịch vụ này miễn phí." },
-        { word: "friday", ipa: "/ˈfraɪdeɪ/", type: "noun", example: "The meeting is scheduled for Friday.", meaning: "Thứ Sáu", exampleMeaning: "Cuộc họp được lên lịch vào Thứ Sáu." },
-        { word: "get", ipa: "/ɡɛt/", type: "verb", example: "I need to get some groceries.", meaning: "Lấy, nhận", exampleMeaning: "Tôi cần đi lấy một số thực phẩm." },
-        { word: "go", ipa: "/ɡoʊ/", type: "verb", example: "Let’s go to the park.", meaning: "Đi", exampleMeaning: "Hãy đi công viên." },
-        { word: "gone", ipa: "/ɡɒn/", type: "verb", example: "She has gone to the store.", meaning: "Đã đi", exampleMeaning: "Cô ấy đã đi đến cửa hàng." },
-        { word: "guideline", ipa: "/ˈɡaɪdlaɪn/", type: "noun", example: "Follow the guidelines for safety.", meaning: "Hướng dẫn", exampleMeaning: "Tuân theo hướng dẫn để đảm bảo an toàn." },
-        { word: "hair cut", ipa: "/hɛr kʌt/", type: "noun", example: "I need a haircut before the party.", meaning: "Cắt tóc", exampleMeaning: "Tôi cần cắt tóc trước bữa tiệc." },
-        { word: "hanging", ipa: "/ˈhæŋɪŋ/", type: "verb/adjective", example: "The picture is hanging on the wall.", meaning: "Treo, đang treo", exampleMeaning: "Bức tranh đang treo trên tường." },
-        { word: "hard", ipa: "/hɑːrd/", type: "adjective", example: "This test is very hard.", meaning: "Khó, cứng", exampleMeaning: "Bài kiểm tra này rất khó." },
-        { word: "held", ipa: "/hɛld/", type: "verb", example: "The event was held last weekend.", meaning: "Được tổ chức", exampleMeaning: "Sự kiện đã được tổ chức cuối tuần trước." },
-        { word: "help", ipa: "/hɛlp/", type: "verb/noun", example: "Can you help me with this task?", meaning: "Giúp đỡ", exampleMeaning: "Bạn có thể giúp tôi với công việc này không?" },
-        { word: "helpful", ipa: "/ˈhɛlpfəl/", type: "adjective", example: "Her advice was very helpful.", meaning: "Hữu ích", exampleMeaning: "Lời khuyên của cô ấy rất hữu ích." },
-        { word: "here", ipa: "/hɪr/", type: "adverb", example: "I am here to help you.", meaning: "Ở đây", exampleMeaning: "Tôi ở đây để giúp bạn." },
-        { word: "hire", ipa: "/haɪər/", type: "verb", example: "They decided to hire a new manager.", meaning: "Thuê, mướn", exampleMeaning: "Họ quyết định thuê một người quản lý mới." },
-        { word: "hope", ipa: "/hoʊp/", type: "verb/noun", example: "I hope it doesn’t rain today.", meaning: "Hy vọng", exampleMeaning: "Tôi hy vọng hôm nay không mưa." },
-        { word: "hot", ipa: "/hɒt/", type: "adjective", example: "It’s very hot outside.", meaning: "Nóng", exampleMeaning: "Bên ngoài rất nóng." },
-        { word: "idea", ipa: "/aɪˈdiːə/", type: "noun", example: "She had a great idea for the project.", meaning: "Ý tưởng", exampleMeaning: "Cô ấy có một ý tưởng tuyệt vời cho dự án." },
-        { word: "if", ipa: "/ɪf/", type: "conjunction", example: "I’ll go if it doesn’t rain.", meaning: "Nếu", exampleMeaning: "Tôi sẽ đi nếu trời không mưa." },
-        { word: "in time", ipa: "/ɪn taɪm/", type: "adverb", example: "We arrived in time for the movie.", meaning: "Đúng giờ", exampleMeaning: "Chúng tôi đến đúng giờ cho buổi chiếu phim." },
-        { word: "in-charge", ipa: "/ɪn tʃɑːrdʒ/", type: "noun/adjective", example: "She is in charge of the project.", meaning: "Phụ trách", exampleMeaning: "Cô ấy phụ trách dự án." },
-        { word: "indoor", ipa: "/ˈɪndɔːr/", type: "adjective", example: "The event will be held indoor due to rain.", meaning: "Trong nhà", exampleMeaning: "Sự kiện sẽ được tổ chức trong nhà do trời mưa." },
-        { word: "informative", ipa: "/ɪnˈfɔːrmətɪv/", type: "adjective", example: "The presentation was very informative.", meaning: "Hữu ích, cung cấp thông tin", exampleMeaning: "Bài thuyết trình rất hữu ích." },
-        { word: "ink", ipa: "/ɪŋk/", type: "noun", example: "The pen ran out of ink.", meaning: "Mực", exampleMeaning: "Cây bút hết mực rồi." },
-        { word: "instruction", ipa: "/ɪnˈstrʌkʃən/", type: "noun", example: "Follow the instructions carefully.", meaning: "Hướng dẫn", exampleMeaning: "Làm theo hướng dẫn cẩn thận." }
-        ,
         { word: "advancement", ipa: "/ədˈvænsmənt/", type: "noun", example: "The company is focused on the advancement of technology.", meaning: "sự tiến bộ", exampleMeaning: "Công ty đang tập trung vào sự tiến bộ của công nghệ." },
         { word: "position", ipa: "/pəˈzɪʃn̩/", type: "noun", example: "He holds a senior position in the company.", meaning: "vị trí", exampleMeaning: "Anh ấy giữ một vị trí cao cấp trong công ty." },
         { word: "encourage", ipa: "/ɪnˈkʌrɪdʒ/", type: "verb", example: "The teacher encouraged the students to ask questions.", meaning: "khuyến khích", exampleMeaning: "Giáo viên khuyến khích học sinh đặt câu hỏi." },
@@ -949,7 +697,6 @@
         { word: "additional", ipa: "/əˈdɪʃənl/", type: "adjective", example: "We need additional information to proceed.", meaning: "thêm vào", exampleMeaning: "Chúng tôi cần thêm thông tin để tiến hành." },
         { word: "solicit", ipa: "/səˈlɪsɪt/", type: "verb", example: "The charity solicited donations from the public.", meaning: "xin", exampleMeaning: "Tổ chức từ thiện đã xin quyên góp từ công chúng." },
         { word: "markets", ipa: "/ˈmɑːrkɪts/", type: "noun", example: "The company targets international markets.", meaning: "thị trường", exampleMeaning: "Công ty nhắm đến các thị trường quốc tế." },
-        { word: "distribute", ipa: "/dɪˈstrɪbjuːt/", type: "verb", example: "They distribute food to the needy.", meaning: "phân phối", exampleMeaning: "Họ phân phối thực phẩm cho người cần." },
         { word: "job advertise", ipa: "/dʒɒb ˈædvərtaɪz/", type: "phrase", example: "The company will job advertise next week.", meaning: "quảng cáo việc làm", exampleMeaning: "Công ty sẽ quảng cáo việc làm vào tuần tới." },
         { word: "facilities", ipa: "/fəˈsɪlɪtiz/", type: "noun", example: "The school provides modern facilities for students.", meaning: "cơ sở vật chất", exampleMeaning: "Trường học cung cấp cơ sở vật chất hiện đại cho học sinh." },
         { word: "furniture", ipa: "/ˈfɜːrnɪtʃər/", type: "noun", example: "They bought new furniture for the house.", meaning: "đồ nội thất", exampleMeaning: "Họ đã mua đồ nội thất mới cho ngôi nhà." },
@@ -975,19 +722,14 @@
         { word: "field trip", ipa: "/fiːld trɪp/", type: "phrase", example: "The students went on a field trip to the museum.", meaning: "chuyến đi thực tế", exampleMeaning: "Học sinh đã đi chuyến thực tế đến bảo tàng." },
         { word: "account", ipa: "/əˈkaʊnt/", type: "noun", example: "She opened a new bank account.", meaning: "tài khoản", exampleMeaning: "Cô ấy đã mở một tài khoản ngân hàng mới." },
         { word: "accomplish", ipa: "/əˈkɒmplɪʃ/", type: "verb", example: "He accomplished his goal after years of effort.", meaning: "hoàn thành", exampleMeaning: "Anh ấy đã hoàn thành mục tiêu sau nhiều năm nỗ lực." },
-        { word: "construction", ipa: "/kənˈstrʌkʃn̩/", type: "noun", example: "The construction of the bridge will take two years.", meaning: "xây dựng", exampleMeaning: "Việc xây dựng cầu sẽ mất hai năm." },
         { word: "reduce", ipa: "/rɪˈdjuːs/", type: "verb", example: "We need to reduce our energy consumption.", meaning: "giảm", exampleMeaning: "Chúng ta cần giảm tiêu thụ năng lượng." },
-        { word: "decrease", ipa: "/dɪˈkriːs/", type: "verb", example: "The temperature will decrease overnight.", meaning: "giảm xuống", exampleMeaning: "Nhiệt độ sẽ giảm xuống qua đêm." },
-        { word: "evaluate", ipa: "/ɪˈvæljueɪt/", type: "verb", example: "The teacher will evaluate the students' performance.", meaning: "đánh giá", exampleMeaning: "Giáo viên sẽ đánh giá hiệu suất của học sinh." },
         { word: "stockholder", ipa: "/ˈstɒkˌhəʊldər/", type: "noun", example: "The stockholders voted on the new policy.", meaning: "cổ đông", exampleMeaning: "Các cổ đông đã bỏ phiếu về chính sách mới." },
         { word: "situate", ipa: "/ˈsɪtʃueɪt/", type: "verb", example: "The hotel is situated near the beach.", meaning: "đặt", exampleMeaning: "Khách sạn được đặt gần bãi biển." },
-        { word: "destination", ipa: "/ˌdɛstɪˈneɪʃn̩/", type: "noun", example: "Paris is our final destination.", meaning: "điểm đến", exampleMeaning: "Paris là điểm đến cuối cùng của chúng tôi." },
         { word: "pessimistic", ipa: "/ˌpɛsɪˈmɪstɪk/", type: "adjective", example: "He is pessimistic about the future.", meaning: "bi quan", exampleMeaning: "Anh ấy bi quan về tương lai." },
         { word: "advertise", ipa: "/ˈædvərtaɪz/", type: "verb", example: "The company will advertise the new product on TV.", meaning: "quảng cáo", exampleMeaning: "Công ty sẽ quảng cáo sản phẩm mới trên TV." },
         { word: "currently", ipa: "/ˈkʌrəntli/", type: "adverb", example: "She is currently working on a new project.", meaning: "hiện tại", exampleMeaning: "Cô ấy hiện đang làm việc trên một dự án mới." },
         { word: "fine", ipa: "/faɪn/", type: "noun", example: "He paid a fine for parking illegally.", meaning: "phạt tiền", exampleMeaning: "Anh ấy đã trả tiền phạt vì đậu xe trái phép." }
     ];
-
     let currentIndex = 0;
     let isEditing = false;
     let isShuffled = false;
@@ -1003,8 +745,13 @@
         const back = document.getElementById("cardBack");
         const card = document.getElementById("flashcard");
 
-        const { word, ipa, type, example, meaning, exampleMeaning } = vocabulary[currentIndex];
+        if (vocabulary.length === 0) {
+            front.innerHTML = "No words available";
+            back.innerHTML = "Add some words to start!";
+            return;
+        }
 
+        const { word, ipa, type, example, meaning, exampleMeaning } = vocabulary[currentIndex];
         front.innerHTML = `<strong>${word}</strong><br>${ipa}<br>(${type})<br>${example}`;
         back.innerHTML = `<strong>${meaning}</strong><br>${exampleMeaning}`;
         card.classList.remove("flipped");
@@ -1012,11 +759,13 @@
     }
 
     function nextCard() {
+        if (vocabulary.length === 0) return;
         currentIndex = (currentIndex + 1) % vocabulary.length;
         updateCard();
     }
 
     function prevCard() {
+        if (vocabulary.length === 0) return;
         currentIndex = (currentIndex - 1 + vocabulary.length) % vocabulary.length;
         updateCard();
     }
@@ -1057,6 +806,10 @@
     }
 
     function showEditWordModal(index = currentIndex) {
+        if (vocabulary.length === 0) {
+            alert("No words to edit!");
+            return;
+        }
         isEditing = true;
         document.getElementById("modalTitle").textContent = "Edit Word";
         document.getElementById("saveButton").onclick = updateCurrentWord;
@@ -1076,7 +829,7 @@
         document.getElementById("newExampleMeaning").disabled = false;
         document.getElementById("saveButton").disabled = false;
         document.getElementById("addWordModal").style.display = "block";
-        checkWordExistence(word, index); // Pass the index to avoid self-duplicate check
+        checkWordExistence(word, index);
         document.getElementById("fieldsError").style.display = "none";
     }
 
@@ -1156,6 +909,7 @@
 
         vocabulary.push({ word: newWord, ipa: newIPA, type: newType, example: newExample, meaning: newMeaning, exampleMeaning: newExampleMeaning });
         closeAddWordModal();
+        currentIndex = vocabulary.length - 1;
         updateCard();
     }
 
@@ -1235,6 +989,7 @@
                 currentIndex = Math.min(currentIndex, vocabulary.length - 1);
             }
             updateCard();
+            showViewWordsModal();
         }
     }
 
@@ -1245,6 +1000,27 @@
         vocabulary
             .filter(item => item.word.toLowerCase().includes(searchTerm))
             .forEach((item, index) => renderWordItem(item, vocabulary.indexOf(item)));
+    });
+
+    // Close modals when clicking outside, but prevent interference with button clicks
+    document.addEventListener("mousedown", function(event) {
+        const addWordModal = document.getElementById("addWordModal");
+        const viewWordsModal = document.getElementById("viewWordsModal");
+        const target = event.target;
+
+        // Check if the click is outside the modals and not on the buttons that open them
+        if (addWordModal.style.display === "block" && 
+            !addWordModal.contains(target) && 
+            !target.classList.contains("add-btn") && 
+            !target.classList.contains("edit-btn")) {
+            closeAddWordModal();
+        }
+
+        if (viewWordsModal.style.display === "block" && 
+            !viewWordsModal.contains(target) && 
+            !target.classList.contains("view-btn")) {
+            closeViewWordsModal();
+        }
     });
 
     // Initial card load (sorted alphabetically by default)
