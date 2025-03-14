@@ -1,0 +1,444 @@
+/* General Reset and Typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    color: #2c3e50;
+    padding: 1rem;
+}
+
+/* Info Display */
+.info {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #34495e;
+    background: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 380px;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Card Row with Previous and Next */
+.card-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Card Container */
+.card-container {
+    width: 100%;
+    max-width: 380px;
+    height: 240px;
+    perspective: 1200px;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 16px;
+}
+
+.card-front {
+    background: #ffffff;
+    color: #34495e;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.card-back {
+    background: linear-gradient(45deg, #ff9f43, #ffcc66);
+    color: #ffffff;
+    transform: rotateY(180deg);
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+/* Buttons Container */
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.button-separator {
+    width: 2px;
+    height: 20px;
+    background: #ccc;
+    margin: 0 1rem;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Colors */
+.add-btn { background: #2ecc71; color: #ffffff; }
+.add-btn:hover { background: #27ae60; }
+
+.edit-btn { background: #f1c40f; color: #ffffff; }
+.edit-btn:hover { background: #d4a017; }
+
+.delete-btn { background: #e74c3c; color: #ffffff; }
+.delete-btn:hover { background: #c0392b; }
+
+.shuffle-btn { background: #3498db; color: #ffffff; }
+.shuffle-btn.active { background: #e74c3c; }
+.shuffle-btn.active:hover { background: #c0392b; }
+.shuffle-btn:hover { background: #2980b9; }
+
+.view-btn { background: #3498db; color: #ffffff; }
+.view-btn:hover { background: #2980b9; }
+
+.speak-btn { background: #3498db; color: #ffffff; }
+.speak-btn:hover { background: #2980b9; }
+
+/* Dropdown Styling */
+select {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: #3498db;
+    color: #ffffff;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+}
+
+select:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+select:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+}
+
+/* Modal Styling */
+#addWordModal, #viewWordsModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 1.5rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 70vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease-out;
+    z-index: 1000;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+#addWordModal h3, #viewWordsModal h3 {
+    margin: 0 0 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.75rem;
+    text-align: center;
+    position: relative;
+}
+
+#addWordModal label {
+    display: block;
+    margin: 0.5rem 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #34495e;
+}
+
+#addWordModal label.required::after {
+    content: " *";
+    color: #e74c3c;
+}
+
+#addWordModal input, #viewWordsModal input {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid #dfe6e9;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: #f9fbfc;
+    transition: all 0.2s ease;
+}
+
+#addWordModal input:focus, #viewWordsModal input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+    background: #ffffff;
+}
+
+#addWordModal input::placeholder, #viewWordsModal input::placeholder {
+    color: #b0bec5;
+}
+
+#addWordModal input:disabled {
+    background: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+#addWordModal .modal-buttons, #viewWordsModal .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+#addWordModal button, #viewWordsModal button {
+    padding: 0.85rem 1.5rem;
+    width: 48%;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+#addWordModal button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+#addWordModal button:first-of-type {
+    background: #2ecc71;
+}
+
+#addWordModal button:last-of-type, #viewWordsModal button {
+    background: #ecf0f1;
+    color: #7f8c8d;
+}
+
+#addWordModal button:hover:not(:disabled), #viewWordsModal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+#addWordModal button:first-of-type:hover:not(:disabled) {
+    background: #27ae60;
+}
+
+#addWordModal button:last-of-type:hover:not(:disabled), #viewWordsModal button:hover {
+    background: #dfe6e9;
+}
+
+#wordError, #fieldsError {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1rem;
+    display: none;
+}
+
+#wordList {
+    margin-top: 1rem;
+}
+
+.word-item {
+    padding: 0.75rem;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    background: #f9fbfc;
+    transition: background 0.2s ease;
+}
+
+.word-item:hover {
+    background: #eef2f6;
+}
+
+.word-item-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.word-item button {
+    padding: 0.5rem 1rem;
+    width: auto;
+    font-size: 0.9rem;
+}
+
+.word-item button:first-of-type {
+    background: #3498db;
+}
+
+.word-item button:last-of-type {
+    background: #2ecc71;
+}
+
+.word-item button:nth-of-type(3) {
+    background: #e74c3c;
+}
+
+.word-item button:nth-of-type(3):hover {
+    background: #c0392b;
+}
+
+.speaker-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (min-width: 1024px) {
+    .card-row { gap: 2rem; }
+    .card-container { max-width: 380px; }
+    .info { max-width: 380px; }
+    .buttons { gap: 1rem; }
+    .button-group { flex-wrap: nowrap; }
+    button { min-width: 140px; }
+    #addWordModal, #viewWordsModal { padding: 2rem; max-width: 480px; width: 90%; }
+    #viewWordsModal { max-width: 600px; }
+    #addWordModal h3, #viewWordsModal h3 { font-size: 1.75rem; }
+    #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 1rem; }
+    #addWordModal button, #viewWordsModal button { font-size: 1rem; padding: 0.85rem 1.5rem; }
+    #wordError, #fieldsError { font-size: 0.9rem; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .card-row { gap: 1.5rem; flex-wrap: wrap; }
+    .card-container { max-width: 320px; height: 240px; }
+    .info { max-width: 320px; font-size: 1rem; padding: 0.5rem 1.25rem; }
+    .buttons { flex-direction: column; gap: 0.75rem; }
+    .button-group { flex-direction: column; width: 100%; }
+    .button-separator { display: none; }
+    button { font-size: 0.9rem; padding: 0.65rem 1.25rem; min-width: 100px; }
+    select { text-align: center; font-size: 0.9rem; padding: 0.65rem 1.25rem; min-width: 140px; }
+    #addWordModal, #viewWordsModal { padding: 1.25rem; width: 85%; max-width: 450px; }
+    #viewWordsModal { max-width: 550px; }
+    #addWordModal h3, #viewWordsModal h3 { font-size: 1.5rem; margin-bottom: 1.25rem; }
+    #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 0.9rem; }
+    #addWordModal input { padding: 0.75rem; }
+    #addWordModal button, #viewWordsModal button { font-size: 0.9rem; padding: 0.65rem 1.25rem; width: 45%; }
+    #wordError, #fieldsError { font-size: 0.8rem; }
+    .word-item { padding: 0.6rem; }
+    .word-item button { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
+}
+
+@media (max-width: 767px) {
+    body { padding: 0.5rem; }
+    .card-row { flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+    .card-container { max-width: 100%; height: 240px; width: 90%; }
+    .info { width: 90%; max-width: 100%; font-size: 0.9rem; padding: 0.5rem 1rem; }
+    .buttons { flex-direction: column; gap: 0.5rem; width: 90%; }
+    .button-group { flex-direction: column; width: 100%; }
+    .button-separator { display: none; }
+    button { font-size: 0.8rem; padding: 0.5rem 1rem; min-width: 100%; width: 100%; }
+    select { text-align: center; width: 100%; font-size: 0.8rem; padding: 0.5rem 1rem; min-width: 100%; }
+    #addWordModal, #viewWordsModal { width: 95%; padding: 1rem; max-width: none; }
+    #addWordModal h3, #viewWordsModal h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+    #addWordModal label, #addWordModal input, #viewWordsModal input { font-size: 0.8rem; }
+    #addWordModal input { padding: 0.6rem; }
+    #addWordModal .modal-buttons, #viewWordsModal .modal-buttons { gap: 0.75rem; flex-direction: column; }
+    #addWordModal button, #viewWordsModal button { font-size: 0.8rem; padding: 0.6rem 1rem; width: 100%; }
+    #wordError, #fieldsError { font-size: 0.7rem; }
+    .word-item { padding: 0.5rem; }
+    .word-item-buttons { flex-direction: column; gap: 0.4rem; }
+    .word-item button { font-size: 0.7rem; padding: 0.3rem 0.7rem; width: 100%; }
+}
