@@ -468,7 +468,9 @@ let vocabForListening = [
     { word: "jacket", ipa: "/ˈdʒækɪt/", type: "noun", example: "He put on a jacket before going out.", meaning: "áo khoác", exampleMeaning: "Anh ấy mặc áo khoác trước khi ra ngoài." },
     { word: "join", ipa: "/dʒɔɪn/", type: "verb", example: "She decided to join the club.", meaning: "tham gia", exampleMeaning: "Cô ấy quyết định tham gia câu lạc bộ." },
     { word: "knapsack", ipa: /ˈnæpsæk/, type: "noun", example: "He carried a knapsack during the hike.", meaning: "ba lô", exampleMeaning: "Anh ấy mang một ba lô trong chuyến đi bộ." }
-];
+].filter((item, index, self) =>
+        index === self.findIndex((t) => t.word.toLowerCase() === item.word.toLowerCase())
+    );
 let vocabForReading = [
     { word: "advancement", ipa: "/ədˈvænsmənt/", type: "noun", example: "The company is focused on the advancement of technology.", meaning: "sự tiến bộ", exampleMeaning: "Công ty đang tập trung vào sự tiến bộ của công nghệ." },
     { word: "position", ipa: "/pəˈzɪʃn̩/", type: "noun", example: "He holds a senior position in the company.", meaning: "vị trí", exampleMeaning: "Anh ấy giữ một vị trí cao cấp trong công ty." },
@@ -874,8 +876,35 @@ let vocabForReading = [
     { word: "generate", ipa: "/ˈdʒenəreɪt/", type: "verb", example: "The project will generate new jobs.", meaning: "tạo ra", exampleMeaning: "Dự án sẽ tạo ra việc làm mới." },
     { word: "generous", ipa: "/ˈdʒenərəs/", type: "adjective", example: "She is known for her generous donations.", meaning: "hào phóng", exampleMeaning: "Cô ấy nổi tiếng vì những khoản quyên góp hào phóng." },
     { word: "appreciate", ipa: "/əˈpriːʃieɪt/", type: "verb", example: "I appreciate your help with this task.", meaning: "cảm kích", exampleMeaning: "Tôi cảm kích sự giúp đỡ của bạn với nhiệm vụ này." },
-    { word: "appropriate", ipa: "/əˈproʊpriət/", type: "adjective", example: "Her outfit is appropriate for the occasion.", meaning: "phù hợp", exampleMeaning: "Trang phục của cô ấy phù hợp với dịp này." }
-];
+    { word: "appropriate", ipa: "/əˈproʊpriət/", type: "adjective", example: "Her outfit is appropriate for the occasion.", meaning: "phù hợp", exampleMeaning: "Trang phục của cô ấy phù hợp với dịp này." },
+
+    { word: "grateful", ipa: "/ˈɡreɪtfəl/", type: "adjective", example: "I am grateful for your help.", meaning: "biết ơn", exampleMeaning: "Tôi biết ơn vì sự giúp đỡ của bạn." },
+    { word: "gratitude", ipa: "/ˈɡrætɪtuːd/", type: "noun", example: "She expressed her gratitude to the team.", meaning: "sự biết ơn", exampleMeaning: "Cô ấy bày tỏ sự biết ơn với đội ngũ." },
+    { word: "loyal", ipa: "/ˈlɔɪəl/", type: "adjective", example: "He is a loyal friend who always supports me.", meaning: "trung thành", exampleMeaning: "Anh ấy là một người bạn trung thành luôn ủng hộ tôi." },
+    { word: "loyalty", ipa: "/ˈlɔɪəlti/", type: "noun", example: "Her loyalty to the company is admirable.", meaning: "sự trung thành", exampleMeaning: "Sự trung thành của cô ấy với công ty thật đáng khâm phục." },
+    { word: "coverage", ipa: "/ˈkʌvərɪdʒ/", type: "noun", example: "The news coverage of the event was extensive.", meaning: "sự đưa tin, phạm vi bảo hiểm", exampleMeaning: "Sự đưa tin về sự kiện này rất rộng rãi." },
+    { word: "emit", ipa: "/ɪˈmɪt/", type: "verb", example: "The factory emits harmful gases into the air.", meaning: "phát ra", exampleMeaning: "Nhà máy phát ra các khí độc hại vào không khí." },
+    { word: "admit", ipa: "/ədˈmɪt/", type: "verb", example: "He admitted his mistake to the teacher.", meaning: "thừa nhận", exampleMeaning: "Anh ấy thừa nhận lỗi lầm của mình với giáo viên." },
+    { word: "admission", ipa: "/ədˈmɪʃn/", type: "noun", example: "Her admission of guilt surprised everyone.", meaning: "sự thừa nhận, sự nhận vào", exampleMeaning: "Sự thừa nhận tội lỗi của cô ấy khiến mọi người bất ngờ." },
+    { word: "exterminate", ipa: "/ɪkˈstɜːrmɪneɪt/", type: "verb", example: "They hired a professional to exterminate the pests.", meaning: "tiêu diệt", exampleMeaning: "Họ đã thuê một chuyên gia để tiêu diệt côn trùng." },
+    { word: "delete", ipa: "/dɪˈliːt/", type: "verb", example: "Please delete the file from your computer.", meaning: "xóa", exampleMeaning: "Vui lòng xóa tệp khỏi máy tính của bạn." },
+    { word: "defect", ipa: "/ˈdiːfekt/", type: "noun", example: "The product was recalled due to a defect.", meaning: "lỗi, khuyết tật", exampleMeaning: "Sản phẩm bị thu hồi do có lỗi." },
+    { word: "detect", ipa: "/dɪˈtekt/", type: "verb", example: "The device can detect smoke in the room.", meaning: "phát hiện", exampleMeaning: "Thiết bị có thể phát hiện khói trong phòng." },
+    { word: "highlight", ipa: "/ˈhaɪlaɪt/", type: "verb/noun", example: "She highlighted the key points in the document.", meaning: "làm nổi bật", exampleMeaning: "Cô ấy làm nổi bật các điểm chính trong tài liệu." },
+    { word: "focus on", ipa: "/ˈfoʊkəs ɒn/", type: "phrase", example: "Let’s focus on solving this problem first.", meaning: "tập trung vào", exampleMeaning: "Hãy tập trung vào việc giải quyết vấn đề này trước." },
+    { word: "horrible", ipa: "/ˈhɔːrəbl/", type: "adjective", example: "The movie was so horrible that I couldn’t watch it.", meaning: "kinh khủng", exampleMeaning: "Bộ phim kinh khủng đến mức tôi không thể xem được." },
+    { word: "horror", ipa: "/ˈhɔːrər/", type: "noun", example: "She screamed in horror at the sight.", meaning: "sự kinh hoàng", exampleMeaning: "Cô ấy hét lên vì kinh hoàng trước cảnh tượng đó." },
+    { word: "terrible", ipa: "/ˈterəbl/", type: "adjective", example: "The weather was terrible during the storm.", meaning: "tồi tệ", exampleMeaning: "Thời tiết rất tồi tệ trong cơn bão." },
+    { word: "expire", ipa: "/ɪkˈspaɪər/", type: "verb", example: "My passport will expire next month.", meaning: "hết hạn", exampleMeaning: "Hộ chiếu của tôi sẽ hết hạn vào tháng tới." },
+    { word: "expiration", ipa: "/ˌekspəˈreɪʃn/", type: "noun", example: "Check the expiration date on the milk carton.", meaning: "sự hết hạn", exampleMeaning: "Kiểm tra ngày hết hạn trên hộp sữa." },
+    { word: "conference", ipa: "/ˈkɑːnfərəns/", type: "noun", example: "They attended a conference on climate change.", meaning: "hội nghị", exampleMeaning: "Họ tham dự một hội nghị về biến đổi khí hậu." },
+    { word: "reference", ipa: "/ˈrefərəns/", type: "noun", example: "He provided a reference for the job application.", meaning: "sự tham khảo, thư giới thiệu", exampleMeaning: "Anh ấy cung cấp một thư giới thiệu cho đơn xin việc." },
+    { word: "extremely", ipa: "/ɪkˈstriːmli/", type: "adverb", example: "The test was extremely difficult for everyone.", meaning: "cực kỳ", exampleMeaning: "Bài kiểm tra cực kỳ khó đối với mọi người." },
+    { word: "hospital", ipa: "/ˈhɑːspɪtl/", type: "noun", example: "She was taken to the hospital after the accident.", meaning: "bệnh viện", exampleMeaning: "Cô ấy được đưa đến bệnh viện sau vụ tai nạn." },
+    { word: "hospitality", ipa: "/ˌhɑːspɪˈtælɪti/", type: "noun", example: "Their hospitality made us feel very welcome.", meaning: "sự hiếu khách", exampleMeaning: "Sự hiếu khách của họ khiến chúng tôi cảm thấy rất được chào đón." }
+].filter((item, index, self) =>
+        index === self.findIndex((t) => t.word.toLowerCase() === item.word.toLowerCase())
+    );
 let vocabulary = vocabForListening; // Default to vocabForListening
 let currentIndex = 0;
 let isEditing = false;
